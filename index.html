@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="naver-site-verification" content="408fb6623a91116e8153e993c67b13b6" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>곤글박이 — 상담 가계도</title>
@@ -21,7 +20,7 @@
   }
 
   body {
-    background: radial-gradient(ellipse at 35% 35%, #f0ece5 0%, #ddd9d1 55%, #cac6be 100%);
+    background: radial-gradient(ellipse at 35% 35%, #ffffff 0%, #faf7f2 55%, #f0ebe3 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,8 +43,8 @@
   /* 카드 크기는 원본 그대로 */
   .scene {
     perspective: 1600px;
-    width: 360px;
-    height: 220px;
+    width: 396px;
+    height: 242px;
     animation: float 6s ease-in-out infinite;
     position: relative;
   }
@@ -185,42 +184,6 @@
     </div>
   </div>
   <div class="ground-shadow"></div>
-</div>
-  
-<div style="display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:0;">
-  <!-- 로고 + 타이틀 -->
-  <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
-    <img src="data:image/png;base64,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"
-         alt="곤글박이 로고"
-         style="width:44px;height:88px;object-fit:contain;" />
-    <div>
-      <div style="display:inline-block;">
-        <div style="font-size:2.2rem;font-weight:800;color:#3a3a32;
-                    letter-spacing:1.04em; margin-right:-1.04em;
-                    font-family:'Noto Serif KR','Malgun Gothic',serif;line-height:1.1;
-                    display:block;">
-          곤글박이
-        </div>
-        <div style="font-size:0.9rem;color:#7a7a6a;margin-top:6px;
-                    font-family:'Malgun Gothic',sans-serif; white-space:nowrap;">
-          가계도 그리기 &nbsp;·&nbsp; 온라인 무료 버전
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- 구분선 -->
-  <div style="width:100%;height:1px;background:rgba(0,0,0,0.08);margin:8px 0;"></div>
-  <!-- 설명 -->
-  <div style="font-size:0.78rem;color:#8a8a7a;line-height:1.8;
-              font-family:'Malgun Gothic',sans-serif;">
-    🔒 모든 데이터는 서버에 저장되지 않습니다<br>
-    💾 JSON으로 저장 · 불러오기 지원<br>
-    🖼️ SVG 이미지로 내보내기 지원
-  </div>
-  <div style="font-size:0.7rem;color:#bbb;margin-top:14px;
-              font-family:'Malgun Gothic',sans-serif;">
-    © 2026. An In-song. Distributed for free. (2026. 안인성. 무료 배포)
-  </div>
 </div>
 
 </div>
@@ -3855,7 +3818,7 @@ function App() {
         if (splash) splash.style.display = 'none';
         setReady(true);
       }, 1200);
-    }, 2800);
+    }, 5800);
   }, []);
 
   if (!ready) return null;
@@ -3882,7 +3845,7 @@ function App() {
         React.createElement('div', { style:{ display:'inline-block' } },
           React.createElement('div', {
             style:{ fontSize:'15px', fontWeight:700, color:'#2a2a22',
-                     fontFamily:"'Malgun Gothic','Apple SD Gothic Neo',sans-serif",
+                     fontFamily:"'HCR Batang','함초롱바탕','Noto Serif KR','Malgun Gothic',serif",
                      lineHeight:1.2,
                      letterSpacing:'0.28em',
                      display:'block', width:'100%' }
