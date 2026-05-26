@@ -3199,7 +3199,42 @@ function Genogram() {
         width: half2 - 1,
         height: half2 - 1,
         fill: "white"
-      })), s === "약물남용의심" && e.gender === "남성" && /*#__PURE__*/React.createElement("rect", {
+      })), s === "약물정신신체" && e.gender === "여성" && /*#__PURE__*/React.createElement("path", {
+        d: `M ${half2} ${half2 + 1} L ${NS2 - 1} ${half2 + 1} A ${half2 - 1} ${half2 - 1} 0 1 1 ${half2} 1 Z`,
+        fill: "#222"
+      }), s === "약물정신신체" && e.gender === "레즈비언" && /*#__PURE__*/React.createElement("path", {
+        d: `M ${half2} ${half2 + 1} L ${NS2 - 1} ${half2 + 1} A ${half2 - 1} ${half2 - 1} 0 1 1 ${half2} 1 Z`,
+        fill: "#222"
+      }), s === "약물정신신체" && e.gender === "게이" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
+        x: 1, y: 1, width: NS2 - 2, height: NS2 - 2, fill: "#222"
+      }), /*#__PURE__*/React.createElement("rect", {
+        x: half2, y: 1, width: half2 - 1, height: half2 - 1, fill: "white"
+      })), s === "약물남용" && e.gender === "게이" && /*#__PURE__*/React.createElement("rect", {
+        x: 1, y: half2 + 1, width: NS2 - 2, height: half2 - 1, fill: "#222"
+      }), s === "약물남용" && e.gender === "레즈비언" && /*#__PURE__*/React.createElement("path", {
+        d: `M ${half2} ${half2 + 1} m -${half2 - 1} 0 a ${half2 - 1} ${half2 - 1} 0 0 0 ${(half2 - 1) * 2} 0 Z`,
+        fill: "#222"
+      }), s === "약물남용" && e.gender === "논바이너리" && /*#__PURE__*/React.createElement("path", {
+        d: `M 0,${half2 + 1} L ${half2},${NS2 + 1} L ${NS2},${half2 + 1} Z`,
+        fill: "#222"
+      }), s === "정신신체문제" && e.gender === "게이" && /*#__PURE__*/React.createElement("rect", {
+        x: 1, y: 1, width: half2 - 1, height: NS2 - 2, fill: "#222"
+      }), s === "정신신체문제" && e.gender === "레즈비언" && /*#__PURE__*/React.createElement("path", {
+        d: `M ${half2} 1 a ${half2 - 1} ${half2 - 1} 0 0 0 0 ${(half2 - 1) * 2} Z`,
+        fill: "#222"
+      }), s === "정신신체문제" && e.gender === "논바이너리" && /*#__PURE__*/React.createElement("path", {
+        d: `M 0,${half2 + 1} L ${half2},1 L ${half2},${NS2 + 1} Z`,
+        fill: "#222"
+      }), s === "약물정신신체" && e.gender === "논바이너리" && /*#__PURE__*/React.createElement(React.Fragment, null,
+        /*#__PURE__*/React.createElement("path", {
+          d: `M ${half2},1 L ${NS2},${half2 + 1} L ${half2},${NS2 + 1} L 0,${half2 + 1} Z`,
+          fill: "#222"
+        }),
+        /*#__PURE__*/React.createElement("path", {
+          d: `M ${half2},1 L ${NS2},${half2 + 1} L ${half2},${half2 + 1} Z`,
+          fill: "white"
+        })
+      ), s === "약물남용의심" && e.gender === "남성" && /*#__PURE__*/React.createElement("rect", {
         x: 1,
         y: half2 + 1,
         width: NS2 - 2,
@@ -3207,6 +3242,14 @@ function Genogram() {
         fill: "#999"
       }), s === "약물남용의심" && e.gender === "여성" && /*#__PURE__*/React.createElement("path", {
         d: `M ${half2} ${half2 + 1} m -${half2 - 1} 0 a ${half2 - 1} ${half2 - 1} 0 0 0 ${(half2 - 1) * 2} 0 Z`,
+        fill: "#999"
+      }), s === "약물남용의심" && e.gender === "게이" && /*#__PURE__*/React.createElement("rect", {
+        x: 1, y: half2 + 1, width: NS2 - 2, height: half2 - 1, fill: "#999"
+      }), s === "약물남용의심" && e.gender === "레즈비언" && /*#__PURE__*/React.createElement("path", {
+        d: `M ${half2} ${half2 + 1} m -${half2 - 1} 0 a ${half2 - 1} ${half2 - 1} 0 0 0 ${(half2 - 1) * 2} 0 Z`,
+        fill: "#999"
+      }), s === "약물남용의심" && e.gender === "논바이너리" && /*#__PURE__*/React.createElement("path", {
+        d: `M 0,${half2 + 1} L ${half2},${NS2 + 1} L ${NS2},${half2 + 1} Z`,
         fill: "#999"
       }), s === "약물남용회복" && e.gender === "남성" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
         x: half2,
@@ -3226,7 +3269,32 @@ function Genogram() {
       }), /*#__PURE__*/React.createElement("path", {
         d: `M ${half2} ${half2 + 1} L 1 ${half2 + 1} A ${half2 - 1} ${half2 - 1} 0 0 0 ${half2} ${NS2} Z`,
         fill: "#222"
-      })), e.dead && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("line", {
+      })), s === "약물남용회복" && e.gender === "게이" && /*#__PURE__*/React.createElement(React.Fragment, null,
+        /*#__PURE__*/React.createElement("rect", {
+          x: half2, y: half2 + 1, width: half2 - 1, height: half2 - 1, fill: "#999"
+        }),
+        /*#__PURE__*/React.createElement("rect", {
+          x: 1, y: half2 + 1, width: half2 - 1, height: half2 - 1, fill: "#222"
+        })
+      ), s === "약물남용회복" && e.gender === "레즈비언" && /*#__PURE__*/React.createElement(React.Fragment, null,
+        /*#__PURE__*/React.createElement("path", {
+          d: `M ${half2} ${half2 + 1} L ${NS2 - 1} ${half2 + 1} A ${half2 - 1} ${half2 - 1} 0 0 1 ${half2} ${NS2} Z`,
+          fill: "#999"
+        }),
+        /*#__PURE__*/React.createElement("path", {
+          d: `M ${half2} ${half2 + 1} L 1 ${half2 + 1} A ${half2 - 1} ${half2 - 1} 0 0 0 ${half2} ${NS2} Z`,
+          fill: "#222"
+        })
+      ), s === "약물남용회복" && e.gender === "논바이너리" && /*#__PURE__*/React.createElement(React.Fragment, null,
+        /*#__PURE__*/React.createElement("path", {
+          d: `M ${half2},${half2 + 1} L ${NS2},${half2 + 1} L ${half2},${NS2 + 1} Z`,
+          fill: "#999"
+        }),
+        /*#__PURE__*/React.createElement("path", {
+          d: `M ${half2},${half2 + 1} L 0,${half2 + 1} L ${half2},${NS2 + 1} Z`,
+          fill: "#222"
+        })
+      ), e.dead && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("line", {
         x1: 2,
         y1: 3,
         x2: NS2 - 2,
@@ -3649,23 +3717,22 @@ function App() {
           src: LOGO_SRC,
           alt: '곤글박이 로고',
           style:{
-            width:32, height:40, objectFit:'contain',
+            width:35, height:44, objectFit:'contain',
                       }
         }),
-        React.createElement('div', { style:{ display:'inline-block' } },
+        React.createElement('div', { style:{ display:'flex', flexDirection:'column', alignItems:'stretch' } },
           React.createElement('div', {
-            style:{ fontSize:'15px', fontWeight:700, color:'#2a2a22',
+            style:{ display:'flex', justifyContent:'space-between', width:'100%',
+                     fontSize:'16.5px', fontWeight:700, color:'#2a2a22',
                      fontFamily:"'HCR Batang','함초롱바탕','Noto Serif KR','Malgun Gothic',serif",
-                     lineHeight:1.2,
-                     letterSpacing:'0.28em',
-                     display:'block', width:'100%' }
-          }, '곤글박이'),
+                     lineHeight:1.2 }
+          }, ...['곤','글','박','이'].map((ch,i) => React.createElement('span',{key:i},ch))),
           React.createElement('div', {
             style:{ fontSize:'11px', color:'#8a8a7a',
                      fontFamily:"'Malgun Gothic','Apple SD Gothic Neo',sans-serif",
                      lineHeight:1.2,
                      whiteSpace:'nowrap' }
-          }, '가계도 그리기')
+          }, '가계도 스케치북')
         )
       ),
       // 우측 버튼
