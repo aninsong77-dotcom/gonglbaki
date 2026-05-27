@@ -393,7 +393,7 @@ function TwoLineBtn({
   }) : /*#__PURE__*/React.createElement("span", {
     className: "text-[10px]"
   }, top), /*#__PURE__*/React.createElement("span", {
-    className: "text-[10px]"
+    className: "text-[8px] whitespace-nowrap"
   }, bottom));
 }
 
@@ -2183,31 +2183,8 @@ function Genogram() {
   }))), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200"
   }), /*#__PURE__*/React.createElement("div", {
-    className: "ml-auto flex items-center gap-1",
-    style: {
-      position: "relative"
-    }
-  }, /*#__PURE__*/React.createElement(TwoLineBtn, {
-    top: "\uD83D\uDCC2",
-    bottom: "\uBD88\uB7EC\uC624\uAE30",
-    onClick: loadJSON
-  }), /*#__PURE__*/React.createElement("div", {
-    ref: saveBtnRef
-  }, /*#__PURE__*/React.createElement(TwoLineBtn, {
-    top: "\uD83D\uDCBE",
-    bottom: "\uC800\uC7A5",
-    onClick: () => {
-      if (saveBtnRef.current) {
-        const r = saveBtnRef.current.getBoundingClientRect();
-        setSaveMenuPos({
-          top: r.bottom + 4,
-          right: window.innerWidth - r.right
-        });
-      }
-      setShowSaveMenu(v => !v);
-    },
-    active: showSaveMenu
-  })))), /*#__PURE__*/React.createElement("div", {
+    className: "ml-auto flex items-center gap-1"
+  })), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-1",
     style: {
       height: "46px",
@@ -2594,7 +2571,29 @@ function Genogram() {
     className: "text-[13px] leading-none"
   }, "\u21A9"), /*#__PURE__*/React.createElement("span", {
     className: "text-[10px]"
-  }, "\uB4A4\uB85C"))), /*#__PURE__*/React.createElement("div", {
+  }, "\uB4A4\uB85C")), /*#__PURE__*/React.createElement("div", {
+    className: "h-6 w-px bg-gray-200"
+  }), /*#__PURE__*/React.createElement(TwoLineBtn, {
+    top: "\uD83D\uDCC2",
+    bottom: "\uBD88\uB7EC\uC624\uAE30",
+    onClick: loadJSON
+  }), /*#__PURE__*/React.createElement("div", {
+    ref: saveBtnRef
+  }, /*#__PURE__*/React.createElement(TwoLineBtn, {
+    top: "\uD83D\uDCBE",
+    bottom: "\uC800\uC7A5",
+    onClick: () => {
+      if (saveBtnRef.current) {
+        const r = saveBtnRef.current.getBoundingClientRect();
+        setSaveMenuPos({
+          top: r.bottom + 4,
+          right: window.innerWidth - r.right
+        });
+      }
+      setShowSaveMenu(v => !v);
+    },
+    active: showSaveMenu
+  }))), /*#__PURE__*/React.createElement("div", {
     className: "ml-auto flex items-center gap-1.5"
   }, !legendVisible && /*#__PURE__*/React.createElement("button", {
     onClick: () => setLegendVisible(true),
@@ -3108,54 +3107,10 @@ function Genogram() {
         fill: "#fff",
         stroke: "#222",
         strokeWidth: 1.5
-      }), e.gender === "사산아" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("polygon", {
-        points: `${half2},1 ${NS2},${NS2} 0,${NS2}`,
-        fill: "#fff",
-        stroke: "#222",
-        strokeWidth: 1.5
-      }), /*#__PURE__*/React.createElement("line", {
-        x1: half2 - 3,
-        y1: NS2 * 0.45,
-        x2: half2 + 3,
-        y2: NS2 * 0.8,
-        stroke: "#222",
-        strokeWidth: 1.5
-      }), /*#__PURE__*/React.createElement("line", {
-        x1: half2 + 3,
-        y1: NS2 * 0.45,
-        x2: half2 - 3,
-        y2: NS2 * 0.8,
-        stroke: "#222",
-        strokeWidth: 1.5
-      })), e.gender === "자연유산" && /*#__PURE__*/React.createElement("circle", {
-        cx: half2,
-        cy: half2 + 1,
-        r: half2 * 0.6,
-        fill: "#fff",
-        stroke: "#222",
-        strokeWidth: 1.5
-      }), e.gender === "인공유산" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
-        cx: half2,
-        cy: half2 + 1,
-        r: half2 * 0.6,
-        fill: "#fff",
-        stroke: "#222",
-        strokeWidth: 1.5
-      }), /*#__PURE__*/React.createElement("line", {
-        x1: half2 - 4,
-        y1: half2 - 3,
-        x2: half2 + 4,
-        y2: half2 + 5,
-        stroke: "#222",
-        strokeWidth: 1.5
-      }), /*#__PURE__*/React.createElement("line", {
-        x1: half2 + 4,
-        y1: half2 - 3,
-        x2: half2 - 4,
-        y2: half2 + 5,
-        stroke: "#222",
-        strokeWidth: 1.5
-      })), e.client && e.gender === "남성" && /*#__PURE__*/React.createElement("rect", {
+      }), e.gender === "사산아" && (() => { const sz2=NS2*0.5, ox2=(NS2-sz2)/2, oy2=(NS2-sz2)/2+1; return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {x:ox2, y:oy2, width:sz2, height:sz2, fill:"#fff", stroke:"#222", strokeWidth:1.5}), /*#__PURE__*/React.createElement("line", {x1:ox2+2, y1:oy2+2, x2:ox2+sz2-2, y2:oy2+sz2-2, stroke:"#222", strokeWidth:1.5}), /*#__PURE__*/React.createElement("line", {x1:ox2+sz2-2, y1:oy2+2, x2:ox2+2, y2:oy2+sz2-2, stroke:"#222", strokeWidth:1.5})); })(),
+      e.gender === "자연유산" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("polygon", {points:`${half2},1 ${NS2},${NS2+1} 0,${NS2+1}`, fill:"#fff", stroke:"#222", strokeWidth:1.5}), /*#__PURE__*/React.createElement("line", {x1:half2-3, y1:NS2*0.4, x2:half2+3, y2:NS2*0.75, stroke:"#222", strokeWidth:1.5}), /*#__PURE__*/React.createElement("line", {x1:half2+3, y1:NS2*0.4, x2:half2-3, y2:NS2*0.75, stroke:"#222", strokeWidth:1.5})),
+      e.gender === "인공유산" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("polygon", {points:`${half2},1 ${NS2},${NS2+1} 0,${NS2+1}`, fill:"#fff", stroke:"#222", strokeWidth:1.5}), /*#__PURE__*/React.createElement("line", {x1:half2-3, y1:NS2*0.4, x2:half2+3, y2:NS2*0.75, stroke:"#222", strokeWidth:1.5}), /*#__PURE__*/React.createElement("line", {x1:half2+3, y1:NS2*0.4, x2:half2-3, y2:NS2*0.75, stroke:"#222", strokeWidth:1.5}), /*#__PURE__*/React.createElement("line", {x1:1, y1:NS2, x2:NS2-1, y2:NS2, stroke:"#222", strokeWidth:1.5})),
+      e.client && e.gender === "남성" && /*#__PURE__*/React.createElement("rect", {
         x: 2 * sc,
         y: 3 * sc,
         width: NS2 - 4 * sc,
