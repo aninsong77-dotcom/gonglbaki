@@ -4,7 +4,7 @@ const NS = 56,
   SNAP = 18,
   CHILD_DROP = 70;
 const uid = () => Math.random().toString(36).slice(2, 9);
-const FAMILY_TYPES = ["결혼", "별거", "이혼", "재결합", "동거"];
+const FAMILY_TYPES = ["결혼", "별거", "이혼", "재결합", "동거", "약혼", "사별"];
 const EMO_TYPES = ["소원", "친밀", "밀착", "단절"];
 const CONFLICT_TYPES = ["갈등", "융합된갈등"];
 const ABUSE_TYPES = ["신체적학대", "성적학대"];
@@ -14,7 +14,7 @@ const MARRIAGE_TYPES = ["결혼", "별거", "이혼", "재결합", "동거"];
 function lineColor(lt, bw, sel) {
   if (sel) return "#3a6a4a";
   if (bw) return "#222";
-  if (["갈등", "융합된갈등", "신체적학대", "성적학대", "단절", "소원"].includes(lt)) return "#dc2626";
+  if (["갈등", "융합된갈등", "신체적학대", "성적학대", "정서적학대", "방임", "통제", "단절", "소원", "무관심"].includes(lt)) return "#dc2626";
   if (lt === "친밀") return "#16a34a";
   if (lt === "밀착") return "#7c3aed";
   return "#222";
@@ -29,7 +29,7 @@ function nc(n) {
 function ncTop(n) {
   if (n.gender === "자연유산" || n.gender === "인공유산") return {
     x: n.x + NS / 2,
-    y: n.y + NS / 2 - 10
+    y: n.y + NS / 2 - 15
   };
   if (n.gender === "임신" || n.gender === "사산아") return {
     x: n.x + NS / 2,
@@ -348,6 +348,25 @@ function LinePreview({
     points: `${w - 2},${mid} ${w - 9},${mid - 4} ${w - 9},${mid + 4}`,
     fill: col
   }));
+  if (type === "약혼") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
+    /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-2,y2:mid,stroke:gray,strokeWidth:2}),
+    /*#__PURE__*/React.createElement("circle",{cx:w/2,cy:mid,r:3,fill:"white",stroke:gray,strokeWidth:1.5}));
+  if (type === "사별") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
+    /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-10,y2:mid,stroke:gray,strokeWidth:2}),
+    /*#__PURE__*/React.createElement("line",{x1:w-7,y1:mid-5,x2:w-7,y2:mid+5,stroke:gray,strokeWidth:2}),
+    /*#__PURE__*/React.createElement("line",{x1:w-11,y1:mid-1,x2:w-3,y2:mid-1,stroke:gray,strokeWidth:1.5}));
+  if (type === "무관심") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
+    /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-2,y2:mid,stroke:col,strokeWidth:1.5,strokeDasharray:"8 5"}));
+  if (type === "정서적학대") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
+    /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-8,y2:mid,stroke:col,strokeWidth:2,strokeDasharray:"5 3"}),
+    /*#__PURE__*/React.createElement("polygon",{points:`${w-2},${mid} ${w-9},${mid-4} ${w-9},${mid+4}`,fill:col}));
+  if (type === "방임") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
+    /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-8,y2:mid,stroke:col,strokeWidth:1.5,strokeDasharray:"3 4"}),
+    /*#__PURE__*/React.createElement("polygon",{points:`${w-2},${mid} ${w-9},${mid-4} ${w-9},${mid+4}`,fill:col}));
+  if (type === "통제") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
+    /*#__PURE__*/React.createElement("line",{x1:9,y1:mid,x2:w-9,y2:mid,stroke:col,strokeWidth:2.5}),
+    /*#__PURE__*/React.createElement("polygon",{points:`${w-2},${mid} ${w-9},${mid-4} ${w-9},${mid+4}`,fill:col}),
+    /*#__PURE__*/React.createElement("polygon",{points:`2,${mid} 9,${mid-4} 9,${mid+4}`,fill:col}));
   return null;
 }
 
@@ -388,6 +407,7 @@ function Genogram() {
   const [marriages, setMarriages] = useState([]);
   const [selected, setSelected] = useState(new Set());
   const [lineType, setLineType] = useState("결혼");
+  const [panelOpen, setPanelOpen] = useState(true);
   const [connectingFrom, setConnectingFrom] = useState(null);
   const [connectingMode, setConnectingMode] = useState("node");
   const [childLineType, setChildLineType] = useState("일반");
@@ -907,9 +927,9 @@ function Genogram() {
     const r = wrapRef.current.getBoundingClientRect();
     const mouseX = e.clientX - r.left;
     const mouseY = e.clientY - r.top;
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    const factor = Math.pow(0.999, e.deltaY);
     setZoom(prev => {
-      const next = Math.min(4, Math.max(0.2, prev * delta));
+      const next = Math.min(4, Math.max(0.2, prev * factor));
       // 마우스 위치 기준으로 줌 (마우스 포인터 아래 내용 고정)
       setPan(p => ({
         x: mouseX - (mouseX - p.x) * (next / prev),
@@ -1326,6 +1346,36 @@ function Genogram() {
         points: `${tip.x},${tip.y} ${tip.x - Math.cos(tipAngle - Math.PI / 6) * arrowLen},${tip.y - Math.sin(tipAngle - Math.PI / 6) * arrowLen} ${tip.x - Math.cos(tipAngle + Math.PI / 6) * arrowLen},${tip.y - Math.sin(tipAngle + Math.PI / 6) * arrowLen}`,
         fill: col
       }));
+    } else if (l.lineType === "약혼") {
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"l",x1,y1,x2,y2,stroke:col,strokeWidth:2}));
+      elems.push(/*#__PURE__*/React.createElement("circle", {key:"c",cx:midX,cy:midY,r:5,fill:"white",stroke:col,strokeWidth:1.5}));
+    } else if (l.lineType === "사별") {
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"l",x1,y1,x2,y2,stroke:col,strokeWidth:2}));
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"v",x1:x2-perpX*7,y1:y2-perpY*7,x2:x2+perpX*7,y2:y2+perpY*7,stroke:col,strokeWidth:2}));
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"h",x1:x2-perpX*5,y1:y2-perpY*5,x2:x2+perpX*5,y2:y2+perpY*5,stroke:col,strokeWidth:1.5}));
+    } else if (l.lineType === "무관심") {
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"l",x1,y1,x2,y2,stroke:col,strokeWidth:1.5,strokeDasharray:"8 5"}));
+    } else if (l.lineType === "정서적학대") {
+      const tip2 = clipToNodeBoundary(x1,y1,x2,y2,l.to);
+      const ta = Math.atan2(tip2.y-y1,tip2.x-x1);
+      const al = 14;
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"l",x1,y1,x2:tip2.x-Math.cos(ta)*al,y2:tip2.y-Math.sin(ta)*al,stroke:col,strokeWidth:2,strokeDasharray:"5 3"}));
+      elems.push(/*#__PURE__*/React.createElement("polygon", {key:"a",points:`${tip2.x},${tip2.y} ${tip2.x-Math.cos(ta-Math.PI/6)*al},${tip2.y-Math.sin(ta-Math.PI/6)*al} ${tip2.x-Math.cos(ta+Math.PI/6)*al},${tip2.y-Math.sin(ta+Math.PI/6)*al}`,fill:col}));
+    } else if (l.lineType === "방임") {
+      const tip3 = clipToNodeBoundary(x1,y1,x2,y2,l.to);
+      const ta3 = Math.atan2(tip3.y-y1,tip3.x-x1);
+      const al3 = 14;
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"l",x1,y1,x2:tip3.x-Math.cos(ta3)*al3,y2:tip3.y-Math.sin(ta3)*al3,stroke:col,strokeWidth:1.5,strokeDasharray:"3 4"}));
+      elems.push(/*#__PURE__*/React.createElement("polygon", {key:"a",points:`${tip3.x},${tip3.y} ${tip3.x-Math.cos(ta3-Math.PI/6)*al3},${tip3.y-Math.sin(ta3-Math.PI/6)*al3} ${tip3.x-Math.cos(ta3+Math.PI/6)*al3},${tip3.y-Math.sin(ta3+Math.PI/6)*al3}`,fill:col}));
+    } else if (l.lineType === "통제") {
+      const tip4 = clipToNodeBoundary(x1,y1,x2,y2,l.to);
+      const ta4 = Math.atan2(tip4.y-y1,tip4.x-x1);
+      const al4 = 14;
+      const tip4b = clipToNodeBoundary(x2,y2,x1,y1,l.from);
+      const ta4b = Math.atan2(tip4b.y-y2,tip4b.x-x2);
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"l",x1:tip4b.x,y1:tip4b.y,x2:tip4.x,y2:tip4.y,stroke:col,strokeWidth:2.5}));
+      elems.push(/*#__PURE__*/React.createElement("polygon", {key:"a1",points:`${tip4.x},${tip4.y} ${tip4.x-Math.cos(ta4-Math.PI/6)*al4},${tip4.y-Math.sin(ta4-Math.PI/6)*al4} ${tip4.x-Math.cos(ta4+Math.PI/6)*al4},${tip4.y-Math.sin(ta4+Math.PI/6)*al4}`,fill:col}));
+      elems.push(/*#__PURE__*/React.createElement("polygon", {key:"a2",points:`${tip4b.x},${tip4b.y} ${tip4b.x-Math.cos(ta4b-Math.PI/6)*al4},${tip4b.y-Math.sin(ta4b-Math.PI/6)*al4} ${tip4b.x-Math.cos(ta4b+Math.PI/6)*al4},${tip4b.y-Math.sin(ta4b+Math.PI/6)*al4}`,fill:col}));
     }
     return elems;
   };
@@ -1534,71 +1584,46 @@ function Genogram() {
       }));
     }
     if (n.gender === "사산아") {
-      const cx = NS / 2,
-        by = NS / 2 + 15,
-        ty = NS / 2 - 15,
-        hw = 17,
-        mx = NS / 2,
-        my = NS / 2;
+      const sz = NS * 0.5, ox = (NS - sz) / 2, oy = (NS - sz) / 2;
       return /*#__PURE__*/React.createElement("g", {
         key: n.id
-      }, /*#__PURE__*/React.createElement("polygon", {
-        points: `${cx},${ty} ${cx + hw},${by} ${cx - hw},${by}`,
-        fill: "white",
-        stroke: s,
-        strokeWidth: sw
+      }, /*#__PURE__*/React.createElement("rect", {
+        x: ox, y: oy, width: sz, height: sz,
+        fill: "white", stroke: s, strokeWidth: sw
       }), /*#__PURE__*/React.createElement("line", {
-        x1: mx - 9,
-        y1: my - 5,
-        x2: mx + 9,
-        y2: my + 8,
-        stroke: s,
-        strokeWidth: sw
+        x1: ox + 4, y1: oy + 4, x2: ox + sz - 4, y2: oy + sz - 4,
+        stroke: s, strokeWidth: sw
       }), /*#__PURE__*/React.createElement("line", {
-        x1: mx + 9,
-        y1: my - 5,
-        x2: mx - 9,
-        y2: my + 8,
-        stroke: s,
-        strokeWidth: sw
+        x1: ox + sz - 4, y1: oy + 4, x2: ox + 4, y2: oy + sz - 4,
+        stroke: s, strokeWidth: sw
       }));
     }
     if (n.gender === "자연유산") {
+      const cx = NS/2, by = NS/2+15, ty = NS/2-15, hw = 17;
       return /*#__PURE__*/React.createElement("g", {
         key: n.id
-      }, /*#__PURE__*/React.createElement("circle", {
-        cx: NS / 2,
-        cy: NS / 2,
-        r: 10,
-        fill: "white",
-        stroke: s,
-        strokeWidth: sw
+      }, /*#__PURE__*/React.createElement("polygon", {
+        points: `${cx},${ty} ${cx+hw},${by} ${cx-hw},${by}`,
+        fill: "white", stroke: s, strokeWidth: sw
+      }), /*#__PURE__*/React.createElement("line", {
+        x1: cx-8, y1: NS/2-4, x2: cx+8, y2: NS/2+8, stroke: s, strokeWidth: sw
+      }), /*#__PURE__*/React.createElement("line", {
+        x1: cx+8, y1: NS/2-4, x2: cx-8, y2: NS/2+8, stroke: s, strokeWidth: sw
       }));
     }
     if (n.gender === "인공유산") {
+      const cx = NS/2, by = NS/2+15, ty = NS/2-15, hw = 17;
       return /*#__PURE__*/React.createElement("g", {
         key: n.id
-      }, /*#__PURE__*/React.createElement("circle", {
-        cx: NS / 2,
-        cy: NS / 2,
-        r: 10,
-        fill: "white",
-        stroke: s,
-        strokeWidth: sw
+      }, /*#__PURE__*/React.createElement("polygon", {
+        points: `${cx},${ty} ${cx+hw},${by} ${cx-hw},${by}`,
+        fill: "white", stroke: s, strokeWidth: sw
       }), /*#__PURE__*/React.createElement("line", {
-        x1: NS / 2 - 7,
-        y1: NS / 2 - 7,
-        x2: NS / 2 + 7,
-        y2: NS / 2 + 7,
-        stroke: s,
-        strokeWidth: sw
+        x1: cx-8, y1: NS/2-4, x2: cx+8, y2: NS/2+8, stroke: s, strokeWidth: sw
       }), /*#__PURE__*/React.createElement("line", {
-        x1: NS / 2 + 7,
-        y1: NS / 2 - 7,
-        x2: NS / 2 - 7,
-        y2: NS / 2 + 7,
-        stroke: s,
-        strokeWidth: sw
+        x1: cx+8, y1: NS/2-4, x2: cx-8, y2: NS/2+8, stroke: s, strokeWidth: sw
+      }), /*#__PURE__*/React.createElement("line", {
+        x1: cx-hw+2, y1: by-5, x2: cx+hw-2, y2: by-5, stroke: s, strokeWidth: sw
       }));
     }
     const parts = [];
@@ -2015,14 +2040,11 @@ function Genogram() {
     label: "가족\n관계",
     types: FAMILY_TYPES
   }, {
-    label: "정서\n거리",
+    label: "감정\n관계선",
     types: EMO_TYPES
   }, {
-    label: "갈등\n역동",
-    types: CONFLICT_TYPES
-  }, {
-    label: "학대",
-    types: ABUSE_TYPES
+    label: "학대\n갈등",
+    types: [...CONFLICT_TYPES, ...ABUSE_TYPES]
   }];
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col h-full",
@@ -2371,59 +2393,33 @@ function Genogram() {
     })
   }, {
     g: "사산아",
-    icon: /*#__PURE__*/React.createElement("g", null, /*#__PURE__*/React.createElement("polygon", {
-      points: "10,3 17,16 3,16",
-      fill: "white",
-      stroke: "#374151",
-      strokeWidth: "1.5"
+    icon: /*#__PURE__*/React.createElement("g", null, /*#__PURE__*/React.createElement("rect", {
+      x: "5", y: "5", width: "10", height: "10",
+      fill: "white", stroke: "#374151", strokeWidth: "1.5"
     }), /*#__PURE__*/React.createElement("line", {
-      x1: "7",
-      y1: "9",
-      x2: "13",
-      y2: "15",
-      stroke: "#374151",
-      strokeWidth: "1.5"
+      x1: "7", y1: "7", x2: "13", y2: "13", stroke: "#374151", strokeWidth: "1.5"
     }), /*#__PURE__*/React.createElement("line", {
-      x1: "13",
-      y1: "9",
-      x2: "7",
-      y2: "15",
-      stroke: "#374151",
-      strokeWidth: "1.5"
+      x1: "13", y1: "7", x2: "7", y2: "13", stroke: "#374151", strokeWidth: "1.5"
     }))
   }, {
     g: "자연유산",
-    icon: /*#__PURE__*/React.createElement("circle", {
-      cx: "10",
-      cy: "10",
-      r: "6",
-      fill: "white",
-      stroke: "#374151",
-      strokeWidth: "1.5"
-    })
+    icon: /*#__PURE__*/React.createElement("g", null, /*#__PURE__*/React.createElement("polygon", {
+      points: "10,3 17,16 3,16", fill: "white", stroke: "#374151", strokeWidth: "1.5"
+    }), /*#__PURE__*/React.createElement("line", {
+      x1: "6", y1: "8", x2: "14", y2: "14", stroke: "#374151", strokeWidth: "1.5"
+    }), /*#__PURE__*/React.createElement("line", {
+      x1: "14", y1: "8", x2: "6", y2: "14", stroke: "#374151", strokeWidth: "1.5"
+    }))
   }, {
     g: "인공유산",
-    icon: /*#__PURE__*/React.createElement("g", null, /*#__PURE__*/React.createElement("circle", {
-      cx: "10",
-      cy: "10",
-      r: "6",
-      fill: "white",
-      stroke: "#374151",
-      strokeWidth: "1.5"
+    icon: /*#__PURE__*/React.createElement("g", null, /*#__PURE__*/React.createElement("polygon", {
+      points: "10,3 17,16 3,16", fill: "white", stroke: "#374151", strokeWidth: "1.5"
     }), /*#__PURE__*/React.createElement("line", {
-      x1: "6",
-      y1: "6",
-      x2: "14",
-      y2: "14",
-      stroke: "#374151",
-      strokeWidth: "1.5"
+      x1: "6", y1: "8", x2: "14", y2: "14", stroke: "#374151", strokeWidth: "1.5"
     }), /*#__PURE__*/React.createElement("line", {
-      x1: "14",
-      y1: "6",
-      x2: "6",
-      y2: "14",
-      stroke: "#374151",
-      strokeWidth: "1.5"
+      x1: "14", y1: "8", x2: "6", y2: "14", stroke: "#374151", strokeWidth: "1.5"
+    }), /*#__PURE__*/React.createElement("line", {
+      x1: "3", y1: "14", x2: "17", y2: "14", stroke: "#374151", strokeWidth: "1.5"
     }))
   }].map(({
     g,
@@ -2613,19 +2609,21 @@ function Genogram() {
     className: `inline-block h-3 w-3 rounded-full bg-white transition-transform shadow ${bw ? "translate-x-3" : "translate-x-0.5"}`
   })), /*#__PURE__*/React.createElement("span", {
     className: "text-[10px] text-gray-500"
-  }, bw ? "흑백" : "컬러")), /*#__PURE__*/React.createElement("button", {
-    onClick: () => {
-      setZoom(1);
-      setPan({
-        x: 0,
-        y: 0
-      });
-    },
-    className: "flex flex-col items-center justify-center px-1 py-1 rounded border text-[9px] font-medium border-gray-200 bg-gray-50 text-gray-700 hover:bg-[#f0f7f2] hover:border-[#3a6a4a] leading-tight gap-0.5",
-    title: "\uC90C \uB9AC\uC14B"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "text-[10px]"
-  }, "\uD83D\uDD0D"), /*#__PURE__*/React.createElement("span", null, Math.round(zoom * 100), "%")), /*#__PURE__*/React.createElement(TwoLineBtn, {
+  }, bw ? "흑백" : "컬러")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-0.5"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setZoom(z => Math.max(0.2, +(z / 1.25).toFixed(3))),
+    className: "w-6 h-8 flex items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-700 hover:bg-[#f0f7f2] hover:border-[#3a6a4a] text-base font-bold leading-none",
+    title: "축소"
+  }, "−"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => { setZoom(1); setPan({x:0,y:0}); },
+    className: "text-[9px] text-gray-500 min-w-[30px] text-center hover:text-[#3a6a4a] hover:underline",
+    title: "100% \uB9AC\uC14B"
+  }, Math.round(zoom * 100), "%"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setZoom(z => Math.min(4, +(z * 1.25).toFixed(3))),
+    className: "w-6 h-8 flex items-center justify-center rounded border border-gray-200 bg-gray-50 text-gray-700 hover:bg-[#f0f7f2] hover:border-[#3a6a4a] text-base font-bold leading-none",
+    title: "\uD655\uB300"
+  }, "+")), /*#__PURE__*/React.createElement(TwoLineBtn, {
     top: "\uC0AD",
     bottom: "\uC81C",
     onClick: doDelete,
@@ -3607,7 +3605,83 @@ function Genogram() {
     className: "text-4xl mb-2"
   }, "\u25A1 \u25CB \u25C7"), /*#__PURE__*/React.createElement("div", {
     className: "text-sm font-medium"
-  }, "\uC0C1\uB2E8\uC5D0\uC11C \uC778\uBB3C\uC744 \uCD94\uAC00\uD558\uC138\uC694")))), /*#__PURE__*/React.createElement("div", {
+  }, "\uC0C1\uB2E8\uC5D0\uC11C \uC778\uBB3C\uC744 \uCD94\uAC00\uD558\uC138\uC694"))),
+  // \uBBF8\uB2C8\uB9F5: \uB178\uB4DC\uAC00 \uD654\uBA74 \uBC16\uC73C\uB85C \uB098\uAC14\uC744 \uB54C\uB9CC \uD45C\uC2DC
+  nodes.length > 0 && nodes.some(n => {
+    const sx = (n.x + NS/2) * zoom + pan.x;
+    const sy = (n.y + NS/2) * zoom + pan.y;
+    return sx < 0 || sx > canvasSize.w || sy < 0 || sy > canvasSize.h;
+  }) && (() => {
+    const MAP_W = 160, MAP_H = 110;
+    let mnX = Infinity, mnY = Infinity, mxX = -Infinity, mxY = -Infinity;
+    nodes.forEach(n => { mnX=Math.min(mnX,n.x); mnY=Math.min(mnY,n.y); mxX=Math.max(mxX,n.x+NS); mxY=Math.max(mxY,n.y+NS+20); });
+    const pad=40; mnX-=pad; mnY-=pad; mxX+=pad; mxY+=pad;
+    const wW=mxX-mnX, wH=mxY-mnY;
+    const sc=Math.min(MAP_W/wW, MAP_H/wH);
+    const offX=(MAP_W-wW*sc)/2, offY=(MAP_H-wH*sc)/2;
+    const toMap=(wx,wy)=>({x:offX+(wx-mnX)*sc, y:offY+(wy-mnY)*sc});
+    const vpX1=-pan.x/zoom, vpY1=-pan.y/zoom;
+    const vpX2=vpX1+canvasSize.w/zoom, vpY2=vpY1+canvasSize.h/zoom;
+    const vm1=toMap(vpX1,vpY1), vm2=toMap(vpX2,vpY2);
+    const vrX=Math.max(0,vm1.x), vrY=Math.max(0,vm1.y);
+    const vrW=Math.min(MAP_W,vm2.x)-vrX, vrH=Math.min(MAP_H,vm2.y)-vrY;
+    return React.createElement("div", {
+      style:{position:"absolute",bottom:12,right:panelOpen?160:40,zIndex:50,background:"rgba(255,255,255,0.93)",border:"1px solid #e5e7eb",borderRadius:8,boxShadow:"0 2px 10px rgba(0,0,0,0.13)",overflow:"hidden",cursor:"crosshair"},
+      onClick: e => {
+        const r = e.currentTarget.getBoundingClientRect();
+        const mx=e.clientX-r.left-offX, my=e.clientY-r.top-offY;
+        const wx=mx/sc+mnX, wy=my/sc+mnY;
+        setPan({x:canvasSize.w/2-wx*zoom, y:canvasSize.h/2-wy*zoom});
+      }
+    },
+    React.createElement("svg", {width:MAP_W, height:MAP_H},
+      lines.map(l => {
+        const p1=getEndpoint(l.from,nodes,lines), p2=getEndpoint(l.to,nodes,lines);
+        const m1=toMap(p1.x,p1.y), m2=toMap(p2.x,p2.y);
+        return React.createElement("line",{key:l.id,x1:m1.x,y1:m1.y,x2:m2.x,y2:m2.y,stroke:"#d1d5db",strokeWidth:1});
+      }),
+      nodes.map(n => {
+        const {x,y}=toMap(n.x+NS/2,n.y+NS/2);
+        return React.createElement("circle",{key:n.id,cx:x,cy:y,r:n.client?4:3,fill:n.client?"#3a6a4a":"#6b7280",opacity:0.85});
+      }),
+      vrW>0&&vrH>0&&React.createElement("rect",{x:vrX,y:vrY,width:vrW,height:vrH,fill:"rgba(58,106,74,0.08)",stroke:"#3a6a4a",strokeWidth:1.5,rx:2})
+    ),
+    React.createElement("div",{style:{position:"absolute",top:3,left:6,fontSize:9,color:"#9ca3af",pointerEvents:"none",fontFamily:"Malgun Gothic,sans-serif"}},"\uBBF8\uB2C8\uB9F5 \u00B7 \uD074\uB9AD\uC774\uB3D9")
+    );
+  })(),
+  // \uC0AC\uC774\uB4DC \uD328\uB110
+  React.createElement("div", {
+    style:{position:"absolute",top:0,right:0,height:"100%",width:panelOpen?148:28,background:"#fff",borderLeft:"1px solid #e5e7eb",display:"flex",flexDirection:"column",transition:"width 0.18s",overflow:"hidden",flexShrink:0,zIndex:40}
+  },
+    React.createElement("button",{
+      onClick:()=>setPanelOpen(v=>!v),
+      title:panelOpen?"\uD328\uB110 \uB2EB\uAE30":"\uCD94\uAC00 \uC120 \uC5F4\uAE30",
+      style:{width:"100%",padding:"5px 0",background:"none",border:"none",borderBottom:"1px solid #e5e7eb",cursor:"pointer",fontSize:11,color:"#6b7280",flexShrink:0}
+    }, panelOpen?"\u2715 \uC811\uAE30":"\uFF0B"),
+    panelOpen && React.createElement("div",{style:{overflowY:"auto",flex:1,padding:"6px 0"}},
+      // \uAC10\uC815\uAD00\uACC4\uC120
+      React.createElement("div",{style:{padding:"4px 8px",fontSize:9,fontWeight:700,color:"#9ca3af",letterSpacing:1}},"\uAC10\uC815\uAD00\uACC4\uC120"),
+      ["\uBB34\uAD00\uC2EC"].map(t=>React.createElement("button",{
+        key:t,
+        onClick:()=>setLineType(t),
+        style:{width:"100%",display:"flex",flexDirection:"column",alignItems:"center",padding:"4px 2px",border:"none",background:lineType===t?"#f0f7f2":"transparent",cursor:"pointer",gap:2,borderRadius:4}
+      },
+        React.createElement(LinePreview,{type:t,size:100,bw}),
+        React.createElement("span",{style:{fontSize:9,color:lineType===t?"#2d7a3a":"#374151"}},"\uBB34\uAD00\uC2EC")
+      )),
+      // \uD559\uB300\u00B7\uAC08\uB4F1
+      React.createElement("div",{style:{padding:"4px 8px",fontSize:9,fontWeight:700,color:"#9ca3af",letterSpacing:1,marginTop:4}},"\uD559\uB300\u00B7\uAC08\uB4F1"),
+      [["\uC815\uC11C\uC801\uD559\uB300","\uC815\uC11C\uC801\n\uD559\uB300"],["\uBC29\uC784","\uBC29\uC784"],["\uD1B5\uC81C","\uD1B5\uC81C"]].map(([t,label])=>React.createElement("button",{
+        key:t,
+        onClick:()=>setLineType(t),
+        style:{width:"100%",display:"flex",flexDirection:"column",alignItems:"center",padding:"4px 2px",border:"none",background:lineType===t?"#f0f7f2":"transparent",cursor:"pointer",gap:2,borderRadius:4}
+      },
+        React.createElement(LinePreview,{type:t,size:100,bw}),
+        React.createElement("span",{style:{fontSize:9,color:lineType===t?"#2d7a3a":"#374151",whiteSpace:"pre-line",textAlign:"center"}},label)
+      ))
+    )
+  )
+  ), /*#__PURE__*/React.createElement("div", {
     className: "bg-white border-t border-gray-200 shrink-0"
   }, /*#__PURE__*/React.createElement("div", {
     className: "px-5 pt-2.5 pb-1 flex items-center gap-3"
