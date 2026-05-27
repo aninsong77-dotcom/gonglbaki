@@ -2054,7 +2054,8 @@ function Genogram() {
     className: "bg-white border-b border-gray-200 px-2 flex flex-col shrink-0",
     style: {
       userSelect: "none",
-      overflow: "hidden",
+      overflowX: "auto",
+      overflowY: "hidden",
       flexShrink: 0
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -2063,8 +2064,8 @@ function Genogram() {
       height: "46px",
       minHeight: "46px",
       maxHeight: "46px",
-      overflowX: "auto",
-      overflowY: "hidden",
+      minWidth: "max-content",
+      overflow: "visible",
       flexShrink: 0
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -2190,8 +2191,8 @@ function Genogram() {
       height: "46px",
       minHeight: "46px",
       maxHeight: "46px",
-      overflowX: "auto",
-      overflowY: "hidden",
+      minWidth: "max-content",
+      overflow: "visible",
       flexShrink: 0
     }
   }, /*#__PURE__*/React.createElement("div", {
