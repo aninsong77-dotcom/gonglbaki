@@ -8,7 +8,7 @@ const FAMILY_TYPES = ["결혼", "별거", "이혼", "재결합", "동거", "약�
 const EMO_TYPES = ["소원", "친밀", "밀착", "단절"];
 const CONFLICT_TYPES = ["갈등", "융합된갈등"];
 const ABUSE_TYPES = ["신체적학대", "성적학대"];
-const MARRIAGE_TYPES = ["결혼", "별거", "이혼", "재결합", "동거"];
+const MARRIAGE_TYPES = ["결혼", "별거", "이혼", "재결합", "동거", "약혼", "사별"];
 
 // 선 색상
 function lineColor(lt, bw, sel) {
