@@ -352,9 +352,8 @@ function LinePreview({
     /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-2,y2:mid,stroke:gray,strokeWidth:2}),
     /*#__PURE__*/React.createElement("circle",{cx:w/2,cy:mid,r:3,fill:"white",stroke:gray,strokeWidth:1.5}));
   if (type === "사별") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
-    /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-10,y2:mid,stroke:gray,strokeWidth:2}),
-    /*#__PURE__*/React.createElement("line",{x1:w-7,y1:mid-5,x2:w-7,y2:mid+5,stroke:gray,strokeWidth:2}),
-    /*#__PURE__*/React.createElement("line",{x1:w-11,y1:mid-1,x2:w-3,y2:mid-1,stroke:gray,strokeWidth:1.5}));
+    /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-2,y2:mid,stroke:gray,strokeWidth:2}),
+    /*#__PURE__*/React.createElement("line",{x1:w/2,y1:mid-5,x2:w/2,y2:mid+5,stroke:gray,strokeWidth:2}));
   if (type === "무관심") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
     /*#__PURE__*/React.createElement("line",{x1:2,y1:mid,x2:w-2,y2:mid,stroke:col,strokeWidth:1.5,strokeDasharray:"8 5"}));
   if (type === "정서적학대") return /*#__PURE__*/React.createElement("svg", {width:w,height:h},
@@ -1351,8 +1350,8 @@ function Genogram() {
       elems.push(/*#__PURE__*/React.createElement("circle", {key:"c",cx:midX,cy:midY,r:5,fill:"white",stroke:col,strokeWidth:1.5}));
     } else if (l.lineType === "사별") {
       elems.push(/*#__PURE__*/React.createElement("line", {key:"l",x1,y1,x2,y2,stroke:col,strokeWidth:2}));
-      elems.push(/*#__PURE__*/React.createElement("line", {key:"v",x1:x2-perpX*7,y1:y2-perpY*7,x2:x2+perpX*7,y2:y2+perpY*7,stroke:col,strokeWidth:2}));
-      elems.push(/*#__PURE__*/React.createElement("line", {key:"h",x1:x2-perpX*5,y1:y2-perpY*5,x2:x2+perpX*5,y2:y2+perpY*5,stroke:col,strokeWidth:1.5}));
+      const cl = 10;
+      elems.push(/*#__PURE__*/React.createElement("line", {key:"c",x1:midX+perpX*cl,y1:midY+perpY*cl,x2:midX-perpX*cl,y2:midY-perpY*cl,stroke:col,strokeWidth:2}));
     } else if (l.lineType === "무관심") {
       elems.push(/*#__PURE__*/React.createElement("line", {key:"l",x1,y1,x2,y2,stroke:col,strokeWidth:1.5,strokeDasharray:"8 5"}));
     } else if (l.lineType === "정서적학대") {
@@ -2064,11 +2063,13 @@ function Genogram() {
       height: "46px",
       minHeight: "46px",
       maxHeight: "46px",
-      overflow: "hidden",
+      overflowX: "auto",
+      overflowY: "hidden",
       flexShrink: 0
     }
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-1"
+    className: "flex items-center gap-1",
+    style: { flexShrink: 0 }
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => addNode("남성"),
     className: "flex flex-col items-center justify-center px-1 py-1 rounded border text-[9px] font-medium border-gray-200 bg-gray-50 text-gray-700 hover:bg-[#f0f7f2] hover:border-[#3a6a4a] leading-tight gap-0.5"
@@ -2212,11 +2213,13 @@ function Genogram() {
       height: "46px",
       minHeight: "46px",
       maxHeight: "46px",
-      overflow: "hidden",
+      overflowX: "auto",
+      overflowY: "hidden",
       flexShrink: 0
     }
   }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-1"
+    className: "flex items-center gap-1",
+    style: { flexShrink: 0 }
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-[8px] text-gray-400 font-bold leading-tight text-center"
   }, "\uC790\uB140"), ["일반", "위탁", "입양"].map(t => /*#__PURE__*/React.createElement("button", {
