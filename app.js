@@ -3741,6 +3741,45 @@ function App() {
           style:{ fontSize:'11px', color:'#ccc',
                    fontFamily:"'Malgun Gothic',sans-serif", marginRight:8 }
         }, '모든 데이터는 서버에 저장되지 않습니다'),
+        React.createElement('div', { style:{ width:'0.5px', height:20, background:'#e5e7eb', margin:'0 4px' } }),
+        React.createElement('div', { style:{ display:'flex', alignItems:'center', gap:8, marginRight:4 } },
+          React.createElement('a', {
+            href: 'https://drive.google.com/file/d/1F2c-l_Lezn7RBtAOCPBKCal8jxKYmire/view?usp=drive_link',
+            target: '_blank', rel: 'noopener', title: '축어록 자동변환+가계도',
+            style:{
+              display:'inline-flex', alignItems:'center', gap:6,
+              padding:'0 14px', height:34,
+              background:'#fff', border:'0.5px solid #d1d5db', borderRadius:6,
+              fontSize:12, fontWeight:500, color:'#374151',
+              cursor:'pointer', whiteSpace:'nowrap', textDecoration:'none',
+            }
+          },
+            React.createElement('svg', { xmlns:'http://www.w3.org/2000/svg', width:14, height:14, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:'2', strokeLinecap:'round', strokeLinejoin:'round' },
+              React.createElement('path', { d:'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' }),
+              React.createElement('polyline', { points:'7 10 12 15 17 10' }),
+              React.createElement('line', { x1:'12', y1:'15', x2:'12', y2:'3' })
+            ),
+            '곤글박이 다운로드'
+          ),
+          React.createElement('a', {
+            href: 'https://blog.naver.com/rmsid1907/224284470652',
+            target: '_blank', rel: 'noopener', title: '곤글박이 설명',
+            style:{
+              display:'inline-flex', alignItems:'center', gap:6,
+              padding:'0 14px', height:34,
+              background:'#3a6a4a', border:'0.5px solid #2d5a3c', borderRadius:6,
+              fontSize:12, fontWeight:500, color:'#fff',
+              cursor:'pointer', whiteSpace:'nowrap', textDecoration:'none',
+            }
+          },
+            React.createElement('svg', { xmlns:'http://www.w3.org/2000/svg', width:14, height:14, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:'2', strokeLinecap:'round', strokeLinejoin:'round' },
+              React.createElement('path', { d:'M12 20h9' }),
+              React.createElement('path', { d:'M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z' })
+            ),
+            '개발자 블로그'
+          )
+        ),
+        React.createElement('div', { style:{ width:'0.5px', height:20, background:'#e5e7eb', margin:'0 4px' } }),
         React.createElement('button', {
           onClick: () => setShowInfo(v => !v),
           title: '사용 안내',
