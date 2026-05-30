@@ -3806,6 +3806,7 @@ function App() {
   const [ready, setReady] = React.useState(false);
   const [showInfo, setShowInfo] = React.useState(false);
   const [tourStep, setTourStep] = React.useState(-1);
+  const [showTourPrompt, setShowTourPrompt] = React.useState(false);
 
 
   React.useEffect(() => {
@@ -3816,7 +3817,7 @@ function App() {
         if (splash) splash.style.display = 'none';
         setReady(true);
         if (!localStorage.getItem('gb_geo_tour_done')) {
-          setTimeout(() => setTourStep(0), 600);
+          setTimeout(() => setShowTourPrompt(true), 600);
         }
       }, 1200);
     }, 5800);
@@ -4088,6 +4089,28 @@ React.createElement('div', {
       style:{ flex:1, overflow:'hidden', height:'calc(100vh - 56px)' }
     },
       React.createElement(Genogram)
+    ),
+    // ── 투어 시작 안내 ──
+    showTourPrompt && React.createElement('div', {
+      style:{ position:'fixed', inset:0, background:'rgba(0,0,0,0.3)', zIndex:9000, display:'flex', alignItems:'center', justifyContent:'center' }
+    },
+      React.createElement('div', {
+        style:{ background:'#fff', borderRadius:12, padding:'28px 32px', boxShadow:'0 8px 32px rgba(0,0,0,0.18)', width:320, fontFamily:"'Malgun Gothic','Apple SD Gothic Neo',sans-serif", textAlign:'center' }
+      },
+        React.createElement('div', { style:{ fontSize:28, marginBottom:12 } }, '🌳'),
+        React.createElement('p', { style:{ fontWeight:700, fontSize:16, color:'#1f2937', marginBottom:8 } }, '가계도 사용법 안내'),
+        React.createElement('p', { style:{ fontSize:13, color:'#6b7280', lineHeight:1.7, marginBottom:24 } }, '처음 오셨나요?\n주요 기능을 단계별로 안내해 드릴게요.'),
+        React.createElement('div', { style:{ display:'flex', gap:10, justifyContent:'center' } },
+          React.createElement('button', {
+            onClick: () => { setShowTourPrompt(false); localStorage.setItem('gb_geo_tour_done', '1'); },
+            style:{ padding:'9px 20px', borderRadius:8, border:'1px solid #e5e7eb', background:'#f9fafb', color:'#6b7280', fontSize:13, cursor:'pointer', fontWeight:500 }
+          }, '괜찮아요'),
+          React.createElement('button', {
+            onClick: () => { setShowTourPrompt(false); setTourStep(0); },
+            style:{ padding:'9px 20px', borderRadius:8, border:'none', background:'#3a6a4a', color:'#fff', fontSize:13, cursor:'pointer', fontWeight:600 }
+          }, '네, 보여주세요 →')
+        )
+      )
     ),
     // ── 투어 오버레이 ──
     tourStep >= 0 && tourStep < TOUR_STEPS.length && React.createElement(TourOverlay, {
