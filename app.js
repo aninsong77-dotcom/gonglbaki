@@ -3728,7 +3728,7 @@ const TOUR_STEPS = [
   { target: "geo-actions",     title: "자녀 추가 · 뒤로",           body: "자녀 추가: 결혼/동거선 선택 후 클릭 →\n연결할 자녀 노드 클릭\n↩ 뒤로: 최대 30단계 실행 취소 (Ctrl+Z)", position: "bottom" },
   { target: "geo-save",        title: "저장 · 불러오기",             body: "💾 저장: SVG(이미지) / JSON(이후 수정 가능)\n📂 열기: 저장된 JSON 파일 불러오기", position: "bottom" },
   { target: "geo-canvas",      title: "캔버스 조작",                body: "• 드래그: 인물 이동\n• Shift+클릭: 다중 선택\n• 휠 스크롤: 줌 인/아웃\n• Alt+드래그: 화면 이동\n• Delete: 선택 항목 삭제", position: "top" },
-  { target: null,              title: "준비 완료! ✅",               body: "이제 직접 그려보세요!\n📖 버튼으로 언제든 다시 볼 수 있어요." },
+  { target: null,              title: "준비 완료! ✅",               body: "이제 직접 그려보세요!\n❓ 버튼으로 언제든 다시 볼 수 있어요." },
 ];
 
 function renderTourBody(text) {
