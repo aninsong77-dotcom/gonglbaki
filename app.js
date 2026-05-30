@@ -2070,7 +2070,8 @@ function Genogram() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-1",
-    style: { flexShrink: 0 }
+    style: { flexShrink: 0 },
+    'data-tour': 'geo-nodes'
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => addNode("남성"),
     className: "flex flex-col items-center justify-center px-1 py-1 rounded border text-[9px] font-medium border-gray-200 bg-gray-50 text-gray-700 hover:bg-[#f0f7f2] hover:border-[#3a6a4a] leading-tight gap-0.5"
@@ -2167,7 +2168,7 @@ function Genogram() {
     className: "h-6 w-px bg-gray-200"
   }), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200"
-  }), lineCategories.map(cat => /*#__PURE__*/React.createElement("div", {
+  }), React.createElement("div", { 'data-tour': 'geo-lines', style: { display: 'flex', alignItems: 'center' } }, lineCategories.map(cat => /*#__PURE__*/React.createElement("div", {
     key: cat.label,
     className: "flex items-center gap-1"
   }, /*#__PURE__*/React.createElement("span", {
@@ -2181,7 +2182,7 @@ function Genogram() {
     bw: bw
   })), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200 mx-0.5"
-  }))), /*#__PURE__*/React.createElement("div", {
+  })))), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200"
   }), /*#__PURE__*/React.createElement("div", {
     className: "ml-auto flex items-center gap-1"
@@ -2197,7 +2198,8 @@ function Genogram() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-1",
-    style: { flexShrink: 0 }
+    style: { flexShrink: 0 },
+    'data-tour': 'geo-child-line'
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-[8px] text-gray-400 font-bold leading-tight text-center"
   }, "\uC790\uB140"), ["일반", "위탁", "입양"].map(t => /*#__PURE__*/React.createElement("button", {
@@ -2245,7 +2247,8 @@ function Genogram() {
     const selectedChildIds = Array.from(selected).filter(id => nodes.some(n => n.id === id));
     const twinDisabled = selectedChildIds.length < 2;
     return /*#__PURE__*/React.createElement("div", {
-      className: "flex items-center gap-1"
+      className: "flex items-center gap-1",
+      'data-tour': 'geo-twins'
     }, /*#__PURE__*/React.createElement("span", {
       className: "text-[8px] text-gray-400 font-bold leading-tight text-center"
     }, "\uC30D", /*#__PURE__*/React.createElement("br", null), "\uB465", /*#__PURE__*/React.createElement("br", null), "\uC774"), [{
@@ -2361,7 +2364,8 @@ function Genogram() {
   })(), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200"
   }), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-1"
+    className: "flex items-center gap-1",
+    'data-tour': 'geo-child-types'
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-[8px] text-gray-400 font-bold leading-tight text-center"
   }, "\uC790\uB140", /*#__PURE__*/React.createElement("br", null), "\uC720\uD615"), [{
@@ -2415,7 +2419,7 @@ function Genogram() {
     viewBox: "0 0 20 20"
   }, icon), /*#__PURE__*/React.createElement("span", null, g)))), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200"
-  }), /*#__PURE__*/React.createElement("span", {
+  }), React.createElement("div", { 'data-tour': 'geo-substance', style: { display: 'flex', alignItems: 'center', gap: 4 } }, /*#__PURE__*/React.createElement("span", {
     className: "text-[8px] text-gray-400 font-bold shrink-0 leading-tight text-center"
   }, "\uC57D\uBB3C", /*#__PURE__*/React.createElement("br", null), "\uC815\uC2E0", /*#__PURE__*/React.createElement("br", null), "\uC2E0\uCCB4"), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center gap-1"
@@ -2502,10 +2506,11 @@ function Genogram() {
     }))), /*#__PURE__*/React.createElement("span", null, label));
   })), /*#__PURE__*/React.createElement("div", {
     className: "h-4 w-px bg-gray-200 mx-1"
-  }), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200"
   }), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-1"
+    className: "flex items-center gap-1",
+    'data-tour': 'geo-textbox'
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => {
       setTextBoxMode(v => !v);
@@ -2550,7 +2555,8 @@ function Genogram() {
   }, "+"))), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200"
   }), /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-1"
+    className: "flex items-center gap-1",
+    'data-tour': 'geo-actions'
   }, /*#__PURE__*/React.createElement(TwoLineBtn, {
     top: "\uC790\uB140",
     bottom: "\uCD94\uAC00",
@@ -2574,7 +2580,7 @@ function Genogram() {
     className: "text-[10px]"
   }, "\uB4A4\uB85C")), /*#__PURE__*/React.createElement("div", {
     className: "h-6 w-px bg-gray-200"
-  }), /*#__PURE__*/React.createElement(TwoLineBtn, {
+  }), React.createElement("div", { 'data-tour': 'geo-save', style: { display: 'flex', alignItems: 'center', gap: 4 } }, /*#__PURE__*/React.createElement(TwoLineBtn, {
     top: "\uD83D\uDCC2",
     bottom: "\uBD88\uB7EC\uC624\uAE30",
     onClick: loadJSON
@@ -2594,7 +2600,7 @@ function Genogram() {
       setShowSaveMenu(v => !v);
     },
     active: showSaveMenu
-  }))), /*#__PURE__*/React.createElement("div", {
+  })))), /*#__PURE__*/React.createElement("div", {
     className: "ml-auto flex items-center gap-1.5"
   }, !legendVisible && /*#__PURE__*/React.createElement("button", {
     onClick: () => setLegendVisible(true),
@@ -2733,6 +2739,7 @@ function Genogram() {
     }
   }, "\uC774\uBBF8\uC9C0\uB85C \uB0B4\uBCF4\uB0B4\uAE30")))), /*#__PURE__*/React.createElement("div", {
     ref: wrapRef,
+    'data-tour': 'geo-canvas',
     className: "flex-1 relative overflow-hidden",
     style: {
       background: bw ? "#fff" : "#fafafa",
@@ -3610,6 +3617,7 @@ function Genogram() {
   })(),
   // \uC0AC\uC774\uB4DC \uD328\uB110
   React.createElement("div", {
+    'data-tour': 'geo-side-panel',
     style:{position:"absolute",top:0,right:0,height:"100%",width:panelOpen?148:28,background:"#fff",borderLeft:"1px solid #e5e7eb",display:"flex",flexDirection:"column",transition:"width 0.18s",overflow:"hidden",flexShrink:0,zIndex:40}
   },
     React.createElement("button",{
@@ -3706,6 +3714,83 @@ function Genogram() {
 
 const { useState, useEffect, useRef, useCallback } = React;
 
+// ── 투어 ─────────────────────────────────────────────────────────
+const TOUR_STEPS = [
+  { target: null,              title: "가계도 편집기 🌳",          body: "가족 구조와 구성원 간의 관계를\n시각적으로 그릴 수 있어요.\n주요 기능을 안내해 드릴게요." },
+  { target: "geo-nodes",       title: "인물 추가 □ ○ ◇",          body: "버튼을 클릭하면 캔버스에 도형이 추가돼요.\n• 더블클릭: 이름 입력\n• 나이 자리 클릭: 나이 입력\n• 사망/내담자 토글로 상태 표시", position: "bottom" },
+  { target: "geo-child-types", title: "자녀 유형",                  body: "유산·사산·임신 등 특수 자녀 도형이에요.\n• 임신: 빈 삼각형\n• 자연유산: 삼각형 + X\n• 인공유산: 삼각형 + X + 아랫선\n• 사산아: 작은 사각형 + X\n부모 관계선에 자녀로 연결해 사용해요.", position: "bottom" },
+  { target: "geo-lines",       title: "관계선 연결",                body: "선 종류를 먼저 선택하세요.\n인물을 우클릭 → 연결 모드 시작\n연결할 인물을 클릭하면 선이 그어집니다.\nEsc로 취소", position: "bottom" },
+  { target: "geo-child-line",  title: "자녀선 종류",                body: "자녀 연결선 종류를 선택해요.\n• 일반: 실선\n• 위탁: 점선\n• 입양: 이중선", position: "bottom" },
+  { target: "geo-twins",       title: "쌍둥이",                     body: "Shift+클릭으로 자녀 2명 이상 선택 후\n쌍둥이 버튼을 클릭하면 선이 그어져요.\n• 쌍둥이: 이란성\n• 일란성: V자 + 가로선", position: "bottom" },
+  { target: "geo-substance",   title: "약물 · 정신 · 신체 표시",    body: "인물을 선택한 뒤 버튼을 클릭하면\n도형 안에 표시가 채워져요.\n다시 클릭하면 표시가 해제돼요.", position: "bottom", width: 300 },
+  { target: "geo-textbox",     title: "텍스트 상자 T",              body: "캔버스 어디든 메모나 설명을 추가할 수 있어요.\n① T 버튼 클릭 → 커서 모양 변경\n② 원하는 위치 클릭 → 텍스트 상자 생성\n더블클릭으로 수정, 드래그로 이동 가능", position: "bottom" },
+  { target: "geo-side-panel",  title: "감정선 · 학대 · 갈등",       body: "오른쪽 패널에 추가 선 종류가 있어요.\n• 감정 관계선: 무관심\n• 학대·갈등: 정서적학대, 방임, 통제\n패널 닫기(✕) / 열기(+) 가능", position: "left" },
+  { target: "geo-actions",     title: "자녀 추가 · 뒤로",           body: "자녀 추가: 결혼/동거선 선택 후 클릭 →\n연결할 자녀 노드 클릭\n↩ 뒤로: 최대 30단계 실행 취소 (Ctrl+Z)", position: "bottom" },
+  { target: "geo-save",        title: "저장 · 불러오기",             body: "💾 저장: SVG(이미지) / JSON(이후 수정 가능)\n📂 열기: 저장된 JSON 파일 불러오기", position: "bottom" },
+  { target: "geo-canvas",      title: "캔버스 조작",                body: "• 드래그: 인물 이동\n• Shift+클릭: 다중 선택\n• 휠 스크롤: 줌 인/아웃\n• Alt+드래그: 화면 이동\n• Delete: 선택 항목 삭제", position: "top" },
+  { target: null,              title: "준비 완료! ✅",               body: "이제 직접 그려보세요!\n📖 버튼으로 언제든 다시 볼 수 있어요." },
+];
+
+function renderTourBody(text) {
+  return React.createElement('div', { style: { textWrap: 'pretty' } },
+    text.split('\n').map((line, i) => {
+      if (!line) return React.createElement('div', { key: i, style: { height: '0.4em' } });
+      const m = line.match(/^([•·])\s/);
+      if (m) {
+        return React.createElement('div', { key: i, style: { display: 'flex', gap: '0.4em', alignItems: 'flex-start' } },
+          React.createElement('span', { style: { flexShrink: 0, lineHeight: 1.6 } }, m[1]),
+          React.createElement('span', { style: { flex: 1, minWidth: 0, lineHeight: 1.6 } }, line.slice(m[0].length))
+        );
+      }
+      return React.createElement('div', { key: i, style: { lineHeight: 1.6 } }, line);
+    })
+  );
+}
+
+function TourOverlay({ step, stepIndex, total, onNext, onPrev, onClose }) {
+  const [spotlight, setSpotlight] = React.useState(null);
+  React.useEffect(() => {
+    if (!step.target) { setSpotlight(null); return; }
+    const el = document.querySelector('[data-tour="' + step.target + '"]');
+    if (!el) { setSpotlight(null); return; }
+    setSpotlight(el.getBoundingClientRect());
+  }, [step]);
+  const TW = step.width || 300, SP = 6, PAD = 10;
+  function tooltipStyle() {
+    if (!spotlight) return { position:'fixed', top:'50%', left:'50%', transform:'translate(-50%,-50%)', zIndex:9002, width:TW };
+    const pos = step.position || 'bottom', cx = spotlight.left + spotlight.width / 2;
+    let top, left;
+    if (pos === 'bottom')      { top = spotlight.bottom + SP + PAD; left = cx - TW / 2; }
+    else if (pos === 'top')    { top = spotlight.top - SP - PAD - 220; left = cx - TW / 2; }
+    else if (pos === 'right')  { top = spotlight.top; left = spotlight.right + SP + PAD; }
+    else                       { top = spotlight.top; left = spotlight.left - TW - SP - PAD; }
+    return { position:'fixed', top: Math.max(8,top), left: Math.max(8, Math.min(left, window.innerWidth-TW-8)), zIndex:9002, width:TW };
+  }
+  return React.createElement(React.Fragment, null,
+    !spotlight && React.createElement('div', { style:{ position:'fixed', inset:0, background:'rgba(0,0,0,0.25)', zIndex:9000, pointerEvents:'none' } }),
+    spotlight && React.createElement('div', { style:{ position:'fixed', top:spotlight.top-SP, left:spotlight.left-SP, width:spotlight.width+SP*2, height:spotlight.height+SP*2, borderRadius:10, boxShadow:'0 0 0 9999px rgba(0,0,0,0.35), 0 0 0 2px #d1d5db', zIndex:9001, pointerEvents:'none' } }),
+    React.createElement('div', { style:{ ...tooltipStyle(), background:'#fff', borderRadius:8, boxShadow:'0 4px 16px rgba(0,0,0,0.15)', border:'1px solid #e5e7eb', overflow:'hidden', fontFamily:"'Malgun Gothic','Apple SD Gothic Neo',sans-serif" } },
+      React.createElement('div', { style:{ padding:'14px 16px' } },
+        React.createElement('p', { style:{ fontWeight:600, color:'#374151', fontSize:14, marginBottom:6 } }, step.title),
+        React.createElement('div', { style:{ fontSize:12, color:'#6b7280' } }, renderTourBody(step.body)),
+        React.createElement('div', { style:{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:14, paddingTop:12, borderTop:'1px solid #f3f4f6' } },
+          React.createElement('button', { onClick:onClose, style:{ fontSize:11, color:'#9ca3af', cursor:'pointer', background:'none', border:'none', padding:0 } }, '건너뛰기'),
+          React.createElement('div', { style:{ display:'flex', gap:6 } },
+            stepIndex > 0 && React.createElement('button', { onClick:onPrev, style:{ fontSize:12, padding:'5px 12px', borderRadius:6, border:'1px solid #e5e7eb', cursor:'pointer', background:'#f9fafb', color:'#374151' } }, '이전'),
+            React.createElement('button', { onClick:onNext, style:{ fontSize:12, padding:'5px 12px', borderRadius:6, border:'1px solid #e5e7eb', cursor:'pointer', background:'#f9fafb', color:'#111827', fontWeight:600 } }, stepIndex === total-1 ? '완료' : '다음 →')
+          )
+        ),
+        React.createElement('div', { style:{ display:'flex', justifyContent:'center', gap:6, marginTop:10 } },
+          Array.from({ length: total }).map((_, i) =>
+            React.createElement('div', { key:i, style:{ borderRadius:99, background: i===stepIndex ? '#6b7280' : '#e5e7eb', width: i===stepIndex ? 12 : 5, height:5, transition:'all 0.2s' } })
+          )
+        )
+      )
+    )
+  );
+}
+// ─────────────────────────────────────────────────────────────────
+
 // ── 줌 완전 차단 ──
 window.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
 window.addEventListener('keydown', e => {
@@ -3720,6 +3805,8 @@ const LOGO_SRC = "images/logo.png";
 function App() {
   const [ready, setReady] = React.useState(false);
   const [showInfo, setShowInfo] = React.useState(false);
+  const [tourStep, setTourStep] = React.useState(-1);
+
 
   React.useEffect(() => {
     const splash = document.getElementById('splash');
@@ -3728,6 +3815,9 @@ function App() {
       setTimeout(() => {
         if (splash) splash.style.display = 'none';
         setReady(true);
+        if (!localStorage.getItem('gb_geo_tour_done')) {
+          setTimeout(() => setTourStep(0), 600);
+        }
       }, 1200);
     }, 5800);
   }, []);
@@ -3813,6 +3903,17 @@ function App() {
           )
         ),
         React.createElement('div', { style:{ width:'0.5px', height:20, background:'#e5e7eb', margin:'0 4px' } }),
+        React.createElement('button', {
+          onClick: () => setTourStep(0),
+          title: '사용 안내 투어',
+          style:{
+            width:32, height:32, borderRadius:6,
+            border:'1px solid #e5e7eb',
+            background:'#fff',
+            cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
+            fontSize:'14px', color:'#6b7280',
+          }
+        }, '❓'),
         React.createElement('button', {
           onClick: () => setShowInfo(v => !v),
           title: '사용 안내',
@@ -3987,7 +4088,23 @@ React.createElement('div', {
       style:{ flex:1, overflow:'hidden', height:'calc(100vh - 56px)' }
     },
       React.createElement(Genogram)
-    )
+    ),
+    // ── 투어 오버레이 ──
+    tourStep >= 0 && tourStep < TOUR_STEPS.length && React.createElement(TourOverlay, {
+      step: TOUR_STEPS[tourStep],
+      stepIndex: tourStep,
+      total: TOUR_STEPS.length,
+      onNext: () => {
+        if (tourStep >= TOUR_STEPS.length - 1) {
+          localStorage.setItem('gb_geo_tour_done', '1');
+          setTourStep(-1);
+        } else {
+          setTourStep(s => s + 1);
+        }
+      },
+      onPrev: () => setTourStep(s => Math.max(0, s - 1)),
+      onClose: () => { localStorage.setItem('gb_geo_tour_done', '1'); setTourStep(-1); }
+    })
   );
 }
 
