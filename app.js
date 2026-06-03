@@ -3772,7 +3772,13 @@ function TourOverlay({ step, stepIndex, total, onNext, onPrev, onClose }) {
     spotlight && React.createElement('div', { style:{ position:'fixed', top:spotlight.top-SP, left:spotlight.left-SP, width:spotlight.width+SP*2, height:spotlight.height+SP*2, borderRadius:10, boxShadow:'0 0 0 9999px rgba(0,0,0,0.35), 0 0 0 2px #d1d5db', zIndex:9001, pointerEvents:'none' } }),
     React.createElement('div', { style:{ ...tooltipStyle(), background:'#fff', borderRadius:8, boxShadow:'0 4px 16px rgba(0,0,0,0.15)', border:'1px solid #e5e7eb', overflow:'hidden', fontFamily:"'Malgun Gothic','Apple SD Gothic Neo',sans-serif" } },
       React.createElement('div', { style:{ padding:'14px 16px' } },
-        React.createElement('p', { style:{ fontWeight:600, color:'#374151', fontSize:14, marginBottom:6 } }, step.title),
+        (!step.target && stepIndex === 0) ? React.createElement('div', { style:{ display:'flex', justifyContent:'center', marginBottom:10 } },
+          React.createElement('svg', { width:28, height:28, viewBox:'0 0 24 24', fill:'none', xmlns:'http://www.w3.org/2000/svg' },
+            React.createElement('circle', { cx:8, cy:9, r:4, stroke:'#3a6a4a', strokeWidth:1.7 }),
+            React.createElement('path', { d:'M12 11.5l7 7-2 2-1.5-1.5-1.5 1.5-1.5-1.5 1-1L12 16.5', stroke:'#3a6a4a', strokeWidth:1.7, strokeLinecap:'round', strokeLinejoin:'round' })
+          )
+        ) : null,
+        React.createElement('p', { style:{ fontWeight:600, color:'#374151', fontSize:14, marginBottom:6, textAlign: (!step.target && stepIndex===0) ? 'center' : undefined } }, step.title.replace('🌳','').trim()),
         React.createElement('div', { style:{ fontSize:12, color:'#6b7280' } }, renderTourBody(step.body)),
         React.createElement('div', { style:{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:14, paddingTop:12, borderTop:'1px solid #f3f4f6' } },
           React.createElement('button', { onClick:onClose, style:{ fontSize:11, color:'#9ca3af', cursor:'pointer', background:'none', border:'none', padding:0 } }, '건너뛰기'),
@@ -4043,7 +4049,10 @@ function GenoChatbot() {
               display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }
     },
       React.createElement('div', { style:{ display:'flex', alignItems:'center', gap:8 } },
-        React.createElement('span', { style:{ fontSize:18 } }, '🌳'),
+        React.createElement('svg', { width:24, height:24, viewBox:'0 0 24 24', fill:'none', xmlns:'http://www.w3.org/2000/svg', style:{flexShrink:0} },
+          React.createElement('circle', { cx:8, cy:9, r:4, stroke:'rgba(255,255,255,0.95)', strokeWidth:1.7 }),
+          React.createElement('path', { d:'M12 11.5l7 7-2 2-1.5-1.5-1.5 1.5-1.5-1.5 1-1L12 16.5', stroke:'rgba(255,255,255,0.95)', strokeWidth:1.7, strokeLinecap:'round', strokeLinejoin:'round' })
+        ),
         React.createElement('div', null,
           React.createElement('div', { style:{ fontWeight:700, fontSize:14 } }, '가계도 도우미'),
           React.createElement('div', { style:{ fontSize:10, opacity:0.85 } }, '사용법을 알려드려요')
@@ -4400,7 +4409,19 @@ React.createElement('div', {
       React.createElement('div', {
         style:{ background:'#fff', borderRadius:12, padding:'28px 32px', boxShadow:'0 8px 32px rgba(0,0,0,0.18)', width:320, fontFamily:"'Malgun Gothic','Apple SD Gothic Neo',sans-serif", textAlign:'center' }
       },
-        React.createElement('div', { style:{ fontSize:28, marginBottom:12 } }, '🌳'),
+        React.createElement('div', { style:{ marginBottom:14, display:'flex', justifyContent:'center' } },
+          React.createElement('div', { style:{ width:56, height:56, borderRadius:'50%', background:'linear-gradient(135deg,#52916a,#3a6a4a)', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 16px rgba(58,106,74,0.35)' } },
+            React.createElement('svg', { width:34, height:34, viewBox:'0 0 32 32', fill:'none', xmlns:'http://www.w3.org/2000/svg' },
+              React.createElement('ellipse', { cx:16, cy:13, rx:9, ry:8.5, fill:'rgba(255,255,255,0.22)' }),
+              React.createElement('ellipse', { cx:10, cy:16, rx:7, ry:6.5, fill:'rgba(255,255,255,0.18)' }),
+              React.createElement('ellipse', { cx:22, cy:16, rx:7, ry:6.5, fill:'rgba(255,255,255,0.18)' }),
+              React.createElement('ellipse', { cx:16, cy:15, rx:11, ry:9, fill:'none', stroke:'rgba(255,255,255,0.95)', strokeWidth:1.3 }),
+              React.createElement('ellipse', { cx:10, cy:17.5, rx:7.5, ry:6, fill:'none', stroke:'rgba(255,255,255,0.75)', strokeWidth:1.1 }),
+              React.createElement('ellipse', { cx:22, cy:17.5, rx:7.5, ry:6, fill:'none', stroke:'rgba(255,255,255,0.75)', strokeWidth:1.1 }),
+              React.createElement('rect', { x:14.5, y:23, width:3, height:6, rx:1.5, fill:'rgba(255,255,255,0.9)' })
+            )
+          )
+        ),
         React.createElement('p', { style:{ fontWeight:700, fontSize:16, color:'#1f2937', marginBottom:8 } }, '가계도 사용법 안내'),
         React.createElement('p', { style:{ fontSize:13, color:'#6b7280', lineHeight:1.7, marginBottom:24 } }, '처음 오셨나요?\n주요 기능을 단계별로 안내해 드릴게요.'),
         React.createElement('div', { style:{ display:'flex', gap:10, justifyContent:'center' } },
