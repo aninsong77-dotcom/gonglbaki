@@ -3683,7 +3683,8 @@ function Genogram() {
   }, /*#__PURE__*/React.createElement("kbd", {
     className: "px-1.5 py-0.5 bg-gray-100 rounded font-mono text-[10px] font-semibold"
   }, "\uB098\uC774\uD074\uB9AD"), " \uB098\uC774\uD3B8\uC9D1")), /*#__PURE__*/React.createElement("span", {
-    className: "ml-auto font-semibold shrink-0 text-right leading-tight text-[11px] text-gray-500 whitespace-nowrap"
+    className: "ml-auto font-semibold shrink-0 text-right leading-tight text-[11px] text-gray-500 whitespace-nowrap",
+    style: { transform: "translateY(-7px)", marginRight: 80 }
   }, "\xA9 2026. An In-song. Distributed for free.", /*#__PURE__*/React.createElement("br", null), "(2026. \uC548\uC778\uC131. \uBB34\uB8CC \uBC30\uD3EC)")), /*#__PURE__*/React.createElement("div", {
     className: "px-5 pb-2.5 flex items-center gap-3 text-[11px] text-gray-500 font-medium"
   }, /*#__PURE__*/React.createElement("span", {
@@ -3802,6 +3803,311 @@ window.addEventListener('touchmove', e => {
 
 const LOGO_SRC = "images/logo.png";
 
+// ════════════════════════════════════════════════════════════
+//  사용 설명 챗봇 (스크립트형 — 외부 서버/API 없이 브라우저 안에서만 동작)
+// ════════════════════════════════════════════════════════════
+const GENO_FAQ = [
+  { id:'what', q:'가계도가 뭔가요?',
+    keywords:['가계도가뭐','가계도란','genogram','뭐하는','무엇','뭔가요','어떤도구','무슨앱','왜쓰'],
+    a:'가계도(Genogram)는 가족 구조와 구성원 간의 관계를 시각화하는 도구예요. 상담에서 내담자의 가족 역동을 파악하고 기록하는 데 활용돼요.' },
+  { id:'tour', q:'단계별 안내 투어 보기',
+    keywords:['투어','처음','시작','따라하','단계별','가이드','안내투어','어떻게시작','뭐부터'],
+    a:'상단 ❓ 버튼을 누르면 주요 기능을 단계별로 짚어주는 화면 투어가 시작돼요. 처음이시면 이걸 추천드려요!' },
+  { id:'add', q:'인물(가족) 추가하기',
+    keywords:['인물추가','사람추가','가족추가','사람넣','인물넣','남성','여성','논바이너리','도형추가','구성원','멤버','사람만들','가족넣'],
+    a:'상단 툴바의 도형 버튼을 클릭하면 캔버스에 인물이 추가돼요.\n• □ 남성   • ○ 여성   • ◇ 논바이너리\n\n추가한 뒤에는\n• 더블클릭 → 이름 입력\n• 도형 안 나이 자리 클릭 → 나이 입력' },
+  { id:'death', q:'사망 표시하기',
+    keywords:['사망','죽','돌아가','엑스','고인','x표시'],
+    a:'인물을 선택한 뒤 ✕(사망 토글) 버튼을 누르면 도형 안에 X가 생겨 사망을 나타내요. 다시 누르면 해제돼요.' },
+  { id:'client', q:'내담자(IP) 표시하기',
+    keywords:['내담자','ip','당사자','이중도형','주인공','지목환자'],
+    a:'인물을 선택한 뒤 ⊡(내담자 토글) 버튼을 누르면 이중 도형으로 표시되어 내담자임을 나타내요.' },
+  { id:'rel', q:'관계선(결혼·이혼 등) 그리기',
+    keywords:['관계선','결혼','이혼','별거','재결합','동거','약혼','사별','선그리','선연결','줄긋','부부','혼인','연결하','선긋'],
+    a:'① 상단 툴바에서 선 종류를 먼저 선택해요 (결혼/별거/이혼/재결합/동거/약혼/사별)\n② 시작 인물을 우클릭 → 연결 모드 시작\n③ 연결할 상대 인물을 클릭 → 선이 그어짐\n④ Esc로 취소' },
+  { id:'emo', q:'정서선·학대·갈등선 그리기',
+    keywords:['정서','감정선','소원','친밀','밀착','단절','갈등','융합','학대','신체적','성적','무관심','방임','통제','정서적학대'],
+    a:'정서·학대·갈등선도 관계선과 같은 방법으로 그려요 (선 선택 → 인물 우클릭 → 상대 클릭).\n• 정서거리: 소원/친밀/밀착/단절\n• 갈등: 갈등/융합된갈등\n• 학대: 신체적학대/성적학대\n\n오른쪽 패널(+ 버튼)을 열면 무관심·정서적학대·방임·통제 같은 추가 선도 있어요.' },
+  { id:'child', q:'자녀 연결하기',
+    keywords:['자녀','아이','자식','아들','딸','자녀선','자녀추가','애기','부모자식','자녀연결'],
+    a:'결혼/동거선에 자녀를 매달아요. 두 가지 방법:\n• 방법1(버튼): 결혼/동거선 클릭 → 상단 "자녀 추가" 버튼 → 자녀 인물 클릭\n• 방법2(우클릭): 결혼/동거선 우클릭 → 자녀 인물 클릭\n\n자녀선은 부모 관계선 중앙에서 수직으로 내려와 연결돼요.' },
+  { id:'childline', q:'자녀선 종류 (일반·위탁·입양)',
+    keywords:['일반선','위탁','입양','자녀선종류','점선','이중선'],
+    a:'자녀 연결선 종류를 고를 수 있어요.\n• 일반: 실선   • 위탁: 점선   • 입양: 이중선' },
+  { id:'special', q:'유산·사산·임신 등 특수 자녀',
+    keywords:['임신','유산','자연유산','인공유산','사산','낙태','유산아','특수자녀'],
+    a:'특수 자녀 도형이에요. 부모 관계선에 자녀로 연결해 사용해요.\n• 임신: 빈 삼각형\n• 자연유산: 삼각형 + X\n• 인공유산: 삼각형 + X + 아랫선\n• 사산아: 작은 사각형 + X' },
+  { id:'twin', q:'쌍둥이 묶기',
+    keywords:['쌍둥이','쌍동이','일란성','이란성','트윈'],
+    a:'Shift+클릭으로 자녀 2명 이상을 선택한 뒤 "쌍둥이" 버튼을 눌러요.\n• 쌍둥이: 이란성   • 일란성: V자 + 가로선' },
+  { id:'subst', q:'약물·정신·신체 표시',
+    keywords:['약물','정신','신체','질환','중독','표시채우','문제표시'],
+    a:'인물을 선택한 뒤 해당 버튼을 누르면 도형 안에 표시가 채워져요. 다시 누르면 해제돼요.' },
+  { id:'text', q:'메모(텍스트 상자) 넣기',
+    keywords:['텍스트','메모','글자','설명추가','t버튼','주석','텍스트상자','글씨'],
+    a:'① 상단 T 버튼 클릭 → 커서 모양이 바뀜\n② 원하는 위치 클릭 → 텍스트 상자 생성\n더블클릭으로 수정, 드래그로 이동할 수 있어요.' },
+  { id:'edit', q:'이름·나이 편집하기',
+    keywords:['이름','나이','편집','수정','글자입력','이름바꾸','나이입력','이름고치'],
+    a:'• 이름: 도형을 더블클릭 → 입력\n• 나이: 도형 안의 나이 텍스트를 클릭 → 입력' },
+  { id:'move', q:'이동·다중 선택하기',
+    keywords:['이동','옮기','움직','다중선택','여러개','범위선택','드래그','함께선택','한꺼번에'],
+    a:'• 이동: 도형을 드래그\n• 다중 선택: Shift+클릭, 또는 빈 공간을 드래그해 범위 선택\n선택한 여러 개를 함께 이동할 수 있어요.' },
+  { id:'del', q:'삭제하기',
+    keywords:['삭제','지우','없애','제거','delete','지움'],
+    a:'지울 항목을 선택한 뒤 Delete 키(또는 상단 삭제 버튼)를 누르면 삭제돼요.' },
+  { id:'undo', q:'되돌리기 (실행 취소)',
+    keywords:['되돌리','실행취소','undo','ctrlz','복구','이전으로','뒤로'],
+    a:'Ctrl+Z(또는 상단 ↩ 뒤로 버튼)로 되돌릴 수 있어요. 최대 30단계까지 가능해요.' },
+  { id:'save', q:'저장하기 (JSON·SVG)',
+    keywords:['저장','세이브','save','내보내기','이미지저장','svg','json저장','파일저장'],
+    a:'💾 저장 버튼을 누르면 두 형식 중 고를 수 있어요.\n• JSON: 나중에 불러와 이어서 수정 가능\n• SVG: 완성본을 벡터 이미지로 내보냄 (확대해도 선명)' },
+  { id:'load', q:'불러오기 (이어서 작업)',
+    keywords:['불러오','열기','load','파일열','이어서','복원','가져오기'],
+    a:'📂 열기 버튼으로 저장해 둔 JSON 파일을 불러오면 그 상태에서 이어서 작업할 수 있어요.' },
+  { id:'zoom', q:'확대·축소·화면 이동',
+    keywords:['확대','축소','줌','zoom','화면이동','패닝','크게','작게','100'],
+    a:'• 휠 스크롤: 줌 인/아웃\n• Alt+드래그: 화면 이동(패닝)\n• 상단 확대/축소/100% 버튼으로도 조절돼요.' },
+  { id:'keys', q:'단축키 모아보기',
+    keywords:['단축키','키보드','숏컷','hotkey','키설명','단축'],
+    a:'⌨️ 단축키\n• 우클릭(인물): 연결 모드 시작\n• 우클릭(관계선): 자녀 연결 모드\n• 더블클릭: 이름 편집\n• Shift+클릭: 다중 선택\n• 빈 공간 드래그: 범위 선택\n• Delete: 삭제\n• Ctrl+Z: 되돌리기\n• Esc: 선택 해제/연결 취소' },
+  { id:'privacy', q:'개인정보는 안전한가요?',
+    keywords:['개인정보','보안','유출','서버','안전','프라이버시','저장되나','외부전송','데이터어디'],
+    a:'🔒 모든 데이터는 이 브라우저 안에서만 처리돼요. 입력한 내용이 외부 서버로 전송되지 않아 상담 내용 유출 걱정 없이 쓸 수 있어요.' },
+];
+const GENO_FAQ_MAP = Object.fromEntries(GENO_FAQ.map(f => [f.id, f]));
+const GENO_QUICK = ['add', 'rel', 'child', 'save', 'keys'];
+const GENO_CATS = [
+  ['🌱 시작하기',     ['what', 'tour', 'privacy']],
+  ['👤 인물 추가',    ['add', 'death', 'client', 'subst', 'special']],
+  ['🔗 관계선 그리기', ['rel', 'emo', 'child', 'childline', 'twin']],
+  ['✏️ 편집·이동',    ['edit', 'move', 'del', 'undo', 'text', 'zoom']],
+  ['💾 저장·단축키',  ['save', 'load', 'keys']],
+];
+const GENO_CAT_OF = {};
+GENO_CATS.forEach(([, ids]) => ids.forEach(id => { GENO_CAT_OF[id] = ids; }));
+function genoRelated(id) {
+  return (GENO_CAT_OF[id] || []).filter(x => x !== id).slice(0, 3);
+}
+
+// 챗봇 전용 애니메이션 스타일 1회 주입
+(function () {
+  if (typeof document === 'undefined' || document.getElementById('geno-chat-style')) return;
+  const s = document.createElement('style');
+  s.id = 'geno-chat-style';
+  s.textContent =
+    '@keyframes gbcblink{0%,80%,100%{opacity:.25}40%{opacity:1}}' +
+    '.gbc-dot{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:#9aa39a;animation:gbcblink 1.2s infinite both}' +
+    '@keyframes gbcpulse{0%{box-shadow:0 8px 22px rgba(58,106,74,.4),0 0 0 0 rgba(58,106,74,.45)}70%{box-shadow:0 8px 22px rgba(58,106,74,.4),0 0 0 14px rgba(58,106,74,0)}100%{box-shadow:0 8px 22px rgba(58,106,74,.4),0 0 0 0 rgba(58,106,74,0)}}' +
+    '@keyframes gbcfloat{0%{opacity:0;transform:translateY(8px) scale(.9)}100%{opacity:1;transform:translateY(0) scale(1)}}' +
+    '@keyframes gbcbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}' +
+    '.gbc-fab{animation:gbcfloat .35s ease both,gbcbob 2.8s ease-in-out 0.5s infinite;transition:box-shadow .18s ease}' +
+    '.gbc-fab:hover{animation:gbcfloat .35s ease both;transform:scale(1.08) translateY(-2px)}' +
+    '.gbc-fab:active{transform:scale(.95)}';
+  document.head.appendChild(s);
+})();
+
+function genoFindFaq(input) {
+  const t = (input || '').toLowerCase().replace(/\s+/g, '');
+  if (!t) return null;
+  if (/(안녕|하이|hello|^hi$|ㅎㅇ|반가|고마|감사|ㄳ|ㄱㅅ)/.test(t)) return { greeting: true };
+  let best = null, score = 0;
+  for (const f of GENO_FAQ) {
+    let s = 0;
+    for (const kw of f.keywords) if (t.includes(kw)) s += kw.length;
+    if (s > score) { score = s; best = f; }
+  }
+  return score > 0 ? best : null;
+}
+
+function GenoChatLines(text) {
+  return text.split('\n').map((ln, i) =>
+    React.createElement('div', { key:i, style: ln ? null : { height:'6px' } }, ln));
+}
+
+function GenoChatbot() {
+  const WELCOME = '안녕하세요! 가계도 스케치북 도우미예요 🌳\n궁금한 걸 입력하거나 아래 버튼을 눌러보세요.';
+  const [open, setOpen] = React.useState(false);
+  const [seen, setSeen] = React.useState(() => { try { return localStorage.getItem('gb_geo_chat_seen') === '1'; } catch (e) { return false; } });
+  const [input, setInput] = React.useState('');
+  const [msgs, setMsgs] = React.useState([
+    { from:'bot', text:WELCOME, chips: GENO_QUICK.map(id => ({ label:GENO_FAQ_MAP[id].q, id })).concat([{ label:'📋 전체 메뉴', id:'__menu' }]) }
+  ]);
+  const bodyRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+  }, [msgs, open]);
+
+  // 타이핑(•••) 표시 후 실제 답변으로 교체
+  const botSay = (payload, delay) => {
+    const tid = 't' + Date.now() + Math.random();
+    setMsgs(p => [...p, { from:'bot', typing:true, _id:tid }]);
+    setTimeout(() => setMsgs(p => p.map(m => m._id === tid ? Object.assign({ from:'bot', _id:tid }, payload) : m)), delay || 420);
+  };
+  const quickChips = () => GENO_QUICK.map(id => ({ label:GENO_FAQ_MAP[id].q, id })).concat([{ label:'📋 전체 메뉴', id:'__menu' }]);
+  const followups = (faq) => {
+    const rel = genoRelated(faq.id).map(id => ({ label:GENO_FAQ_MAP[id].q, id }));
+    const extra = faq.id === 'tour' ? [{ label:'▶ 투어 시작하기', id:'__tour' }] : [];
+    return extra.concat(rel).concat([{ label:'📋 전체 메뉴', id:'__menu' }]);
+  };
+  const menuMsg = (lead) => ({
+    text: lead || '무엇이 궁금하세요? 👇',
+    grouped: GENO_CATS.map(([label, ids]) => ({ label, chips: ids.map(id => ({ label:GENO_FAQ_MAP[id].q, id })) })),
+  });
+
+  const handle = (text) => {
+    const q = text.trim();
+    if (!q) return;
+    setMsgs(p => [...p, { from:'user', text:q }]);
+    setInput('');
+    const r = genoFindFaq(q);
+    if (r && r.greeting) botSay({ text:'네, 무엇을 도와드릴까요? 😊', chips: quickChips() });
+    else if (r) botSay({ text:r.a, chips: followups(r) });
+    else botSay(menuMsg('음, 정확히 못 찾았어요. 아래에서 골라보시거나 다른 말로 물어봐 주세요!'));
+  };
+
+  const onChip = (id, label) => {
+    if (id === '__tour') {
+      setOpen(false);
+      window.dispatchEvent(new CustomEvent('geno-chat-action', { detail:'tour' }));
+      return;
+    }
+    if (id === '__menu') {
+      setMsgs(p => [...p, { from:'user', text:'전체 메뉴' }]);
+      botSay(menuMsg());
+      return;
+    }
+    const faq = GENO_FAQ_MAP[id];
+    if (!faq) return;
+    setMsgs(p => [...p, { from:'user', text: label || faq.q }]);
+    botSay({ text: faq.a, chips: followups(faq) });
+  };
+
+  const chipRow = (chips, kp) => React.createElement('div', { style:{ display:'flex', flexWrap:'wrap', gap:6 } },
+    ...chips.map((c, j) => React.createElement('button', {
+      key: kp + j, onClick: () => onChip(c.id, c.label),
+      style:{ padding:'5px 10px', borderRadius:14, border:'1px solid #cfe0d4',
+              background:'#fff', color:'#3a6a4a', fontSize:11, cursor:'pointer',
+              fontWeight:500, whiteSpace:'nowrap' }
+    }, c.label)));
+
+  // 닫혀 있을 때: 떠 있는 버블 버튼 (첫 방문 시 펄스로 주목)
+  if (!open) {
+    const openChat = () => { setOpen(true); if (!seen) { setSeen(true); try { localStorage.setItem('gb_geo_chat_seen', '1'); } catch (e) {} } };
+    return React.createElement('div', {
+      style:{ position:'fixed', right:20, bottom:20, zIndex:8000, display:'flex', alignItems:'center', gap:10 }
+    },
+      !seen ? React.createElement('div', {
+        onClick: openChat,
+        style:{ background:'rgba(51,53,47,0.82)', backdropFilter:'blur(6px)', color:'#fff', fontSize:12, fontWeight:600,
+                padding:'8px 13px', borderRadius:16, boxShadow:'0 3px 14px rgba(0,0,0,0.18)',
+                cursor:'pointer', whiteSpace:'nowrap', animation:'gbcfloat .4s ease both' }
+      }, '사용법이 궁금하면 눌러보세요 👉') : null,
+      React.createElement('button', {
+        onClick: openChat,
+        title: '궁금한 기능을 질문하면 알려드려요!',
+        className: 'gbc-fab',
+        style:{
+          width:58, height:58, borderRadius:'50%', border:'none', padding:0,
+          background:'linear-gradient(135deg,#52916a 0%,#3a6a4a 100%)',
+          cursor:'pointer',
+          boxShadow: seen ? '0 8px 22px rgba(58,106,74,0.4)' : undefined,
+          animation: seen ? undefined : 'gbcpulse 2s infinite',
+          display:'flex', alignItems:'center', justifyContent:'center',
+        }
+      },
+        React.createElement('svg', { width:27, height:27, viewBox:'0 0 24 24', fill:'none', xmlns:'http://www.w3.org/2000/svg' },
+          React.createElement('path', { d:'M4 5.6C4 4.7 4.7 4 5.6 4h12.8C19.3 4 20 4.7 20 5.6v8.8c0 .9-.7 1.6-1.6 1.6H9.2l-3.6 3c-.6.5-1.6.1-1.6-.7V5.6Z', fill:'#fff' }),
+          React.createElement('circle', { cx:8.8, cy:10, r:1.25, fill:'#3a6a4a' }),
+          React.createElement('circle', { cx:12, cy:10, r:1.25, fill:'#3a6a4a' }),
+          React.createElement('circle', { cx:15.2, cy:10, r:1.25, fill:'#3a6a4a' })
+        )
+      )
+    );
+  }
+
+  // 열려 있을 때: 채팅창
+  return React.createElement('div', {
+    style:{
+      position:'fixed', right:20, bottom:20, zIndex:8001,
+      width:340, maxWidth:'calc(100vw - 40px)', height:480, maxHeight:'calc(100vh - 40px)',
+      background:'#fff', borderRadius:14, overflow:'hidden',
+      boxShadow:'0 8px 32px rgba(0,0,0,0.22)',
+      display:'flex', flexDirection:'column',
+      fontFamily:"'Malgun Gothic','Apple SD Gothic Neo',sans-serif",
+    }
+  },
+    // 헤더
+    React.createElement('div', {
+      style:{ background:'linear-gradient(135deg,#52916a 0%,#3a6a4a 100%)', color:'#fff', padding:'12px 16px',
+              display:'flex', alignItems:'center', justifyContent:'space-between', flexShrink:0 }
+    },
+      React.createElement('div', { style:{ display:'flex', alignItems:'center', gap:8 } },
+        React.createElement('span', { style:{ fontSize:18 } }, '🌳'),
+        React.createElement('div', null,
+          React.createElement('div', { style:{ fontWeight:700, fontSize:14 } }, '가계도 도우미'),
+          React.createElement('div', { style:{ fontSize:10, opacity:0.85 } }, '사용법을 알려드려요')
+        )
+      ),
+      React.createElement('button', {
+        onClick: () => setOpen(false),
+        style:{ width:26, height:26, borderRadius:6, border:'none',
+                background:'rgba(255,255,255,0.18)', color:'#fff', cursor:'pointer', fontSize:13 }
+      }, '✕')
+    ),
+    // 메시지 본문
+    React.createElement('div', {
+      ref: bodyRef,
+      style:{ flex:1, overflowY:'auto', padding:'14px', background:'#f6f7f5',
+              display:'flex', flexDirection:'column', gap:10 }
+    },
+      ...msgs.map((m, i) => m.from === 'user'
+        ? React.createElement('div', { key:i, style:{ alignSelf:'flex-end', maxWidth:'80%',
+            background:'#3a6a4a', color:'#fff', padding:'8px 12px', borderRadius:'12px 12px 2px 12px',
+            fontSize:12.5, lineHeight:1.5, whiteSpace:'pre-wrap' } }, m.text)
+        : React.createElement('div', { key:i, style:{ alignSelf:'flex-start', maxWidth:'92%', display:'flex', flexDirection:'column', gap:7 } },
+            m.typing
+              ? React.createElement('div', { style:{ background:'#fff', padding:'11px 14px', width:'fit-content',
+                  borderRadius:'12px 12px 12px 2px', border:'1px solid #e7e9e4' } },
+                  React.createElement('span', { className:'gbc-dot' }),
+                  React.createElement('span', { className:'gbc-dot' }),
+                  React.createElement('span', { className:'gbc-dot' }))
+              : React.createElement(React.Fragment, null,
+                  m.text ? React.createElement('div', { style:{ background:'#fff', color:'#33352f', padding:'9px 12px',
+                    borderRadius:'12px 12px 12px 2px', fontSize:12.5, lineHeight:1.55,
+                    border:'1px solid #e7e9e4' } }, ...GenoChatLines(m.text)) : null,
+                  m.grouped ? React.createElement('div', { style:{ display:'flex', flexDirection:'column', gap:9 } },
+                    ...m.grouped.map((g, gi) => React.createElement('div', { key:'g'+gi },
+                      React.createElement('div', { style:{ fontSize:10.5, fontWeight:700, color:'#7a8a7c', margin:'1px 2px 5px' } }, g.label),
+                      chipRow(g.chips, 'g'+gi+'_')
+                    ))
+                  ) : null,
+                  m.chips && m.chips.length ? chipRow(m.chips, 'c'+i+'_') : null
+                )
+          )
+      )
+    ),
+    // 입력창
+    React.createElement('div', {
+      style:{ display:'flex', gap:8, padding:'10px 12px', borderTop:'1px solid #eceee9', background:'#fff', flexShrink:0 }
+    },
+      React.createElement('input', {
+        value: input,
+        onChange: (e) => setInput(e.target.value),
+        onKeyDown: (e) => { if (e.key === 'Enter') handle(input); },
+        placeholder: '예: 결혼선 어떻게 그려요?',
+        style:{ flex:1, border:'1px solid #d8dad4', borderRadius:18, padding:'8px 14px',
+                fontSize:12.5, outline:'none', fontFamily:'inherit' }
+      }),
+      React.createElement('button', {
+        onClick: () => handle(input),
+        style:{ width:38, height:38, borderRadius:'50%', border:'none', background:'#3a6a4a',
+                color:'#fff', cursor:'pointer', fontSize:15, flexShrink:0 }
+      }, '➤')
+    )
+  );
+}
+
 function App() {
   const [ready, setReady] = React.useState(false);
   const [showInfo, setShowInfo] = React.useState(false);
@@ -3821,6 +4127,14 @@ function App() {
         }
       }, 1200);
     }, 5800);
+  }, []);
+
+  React.useEffect(() => {
+    const onAction = (e) => {
+      if (e.detail === 'tour') { setShowTourPrompt(false); setTourStep(0); }
+    };
+    window.addEventListener('geno-chat-action', onAction);
+    return () => window.removeEventListener('geno-chat-action', onAction);
   }, []);
 
   if (!ready) return null;
@@ -3914,22 +4228,11 @@ function App() {
             cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
             fontSize:'14px', color:'#6b7280',
           }
-        }, '❓'),
-        React.createElement('button', {
-          onClick: () => setShowInfo(v => !v),
-          title: '사용 안내',
-          style:{
-            width:32, height:32, borderRadius:6,
-            border:'1px solid ' + (showInfo ? '#3a6a4a' : '#e5e7eb'),
-            background: showInfo ? '#f0f7f2' : '#fff',
-            cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
-            fontSize:'16px', color: showInfo ? '#3a6a4a' : '#6b7280',
-          }
-        }, '📖')
+        }, '❓')
       )
     ),
-    // ── 정보 패널 ──
-    showInfo ? 
+    // ── 정보 패널 (제거됨 — 💬 챗봇으로 대체) ──
+    false ?
 React.createElement('div', {
   style: {
     position:'fixed', top:64, right:12, zIndex:1000,
@@ -4127,7 +4430,9 @@ React.createElement('div', {
       },
       onPrev: () => setTourStep(s => Math.max(0, s - 1)),
       onClose: () => { localStorage.setItem('gb_geo_tour_done', '1'); setTourStep(-1); }
-    })
+    }),
+    // ── 사용법 챗봇 ──
+    React.createElement(GenoChatbot)
   );
 }
 
