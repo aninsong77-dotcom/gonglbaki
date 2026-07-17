@@ -537,7 +537,9 @@ export default function Genogram() {
     if (childDropDragRef.current) {
       const pt = svgPt(e.clientX, e.clientY);
       const { marriageId, ox } = childDropDragRef.current;
-      const next = pt.x - ox;
+      let next = pt.x - ox;
+      const DROP_SNAP = 8; // 자석 스냅: 정중앙(오프셋 0) 근처면 딱 붙게
+      if (Math.abs(next) < DROP_SNAP) next = 0;
       setMarriages(p => p.map(m => m.id === marriageId ? { ...m, dropOffsetX: next } : m));
     }
   };
@@ -849,29 +851,13 @@ export default function Genogram() {
 
     return (
       <g key={`m-${m.id}`}>
-        {/* ── 비쌍둥이 자녀 선 ── */}
-        {nonTwinChildren.length === 1 ? (() => {
-          // 자녀 1명: parentY → 자녀 도형 상단까지 전체를 특수선으로
-          const c = nonTwinChildren[0];
-          const clt = m.childLineTypes?.[c.id] || "일반";
-          const cx = nc(c).x;
-          const ty = topOf(c).y;
-          if (clt === "위탁") return (
-            <line key={c.id} x1={midX} y1={parentY} x2={cx} y2={ty} stroke={col} strokeWidth={sw} strokeDasharray="6 4" />
-          );
-          if (clt === "입양") return (
-            <g key={c.id}>
-              <line x1={midX - 3} y1={parentY} x2={cx - 3} y2={ty} stroke={col} strokeWidth={sw} />
-              <line x1={midX + 3} y1={parentY} x2={cx + 3} y2={ty} stroke={col} strokeWidth={sw} strokeDasharray="5 4" />
-            </g>
-          );
-          // 일반
-          return <line key={c.id} x1={midX} y1={parentY} x2={cx} y2={ty} stroke={col} strokeWidth={sw} />;
-        })() : nonTwinChildren.length > 1 ? (
-          // 자녀 2명 이상: 기존 방식 (수직선 → 수평바 → 각 자녀)
+        {/* ── 비쌍둥이 자녀 선: 수직 몸통선(항상 x1===x2===midX라 무조건 수직) → 가로 바 → 각 자녀로 드롭.
+             자녀가 1명이면 가로 바 길이가 0이 되어 자연히 몸통선만 보임(예전의 "1명 특수선"과 동일하게 보이되,
+             드래그로 위치를 옮겨도 몸통선은 항상 정확히 수직 유지) ── */}
+        {nonTwinChildren.length > 0 && (
           <>
             <line x1={midX} y1={parentY} x2={midX} y2={dropY} stroke={col} strokeWidth={sw} />
-            <line x1={Math.min(...nonTwinChildren.map(c => nc(c).x))} y1={dropY} x2={Math.max(...nonTwinChildren.map(c => nc(c).x))} y2={dropY} stroke={col} strokeWidth={sw} />
+            <line x1={Math.min(midX, ...nonTwinChildren.map(c => nc(c).x))} y1={dropY} x2={Math.max(midX, ...nonTwinChildren.map(c => nc(c).x))} y2={dropY} stroke={col} strokeWidth={sw} />
             {nonTwinChildren.map(c => {
               const clt = m.childLineTypes?.[c.id] || "일반";
               const cx = nc(c).x;
@@ -886,7 +872,7 @@ export default function Genogram() {
               return <line key={c.id} x1={cx} y1={dropY} x2={cx} y2={ty} stroke={col} strokeWidth={sw} />;
             })}
           </>
-        ) : null}
+        )}
         {twinGroups.map((group, gi) => {
           const gc = group.map(id => nodes.find(n => n.id === id)).filter(Boolean) as GNode[];
           if (gc.length < 2) return null;
@@ -1350,11 +1336,21 @@ export default function Genogram() {
                       <span className="text-[13px] font-bold leading-none">T</span>
                       <span className="text-[9px]">텍스트</span>
                     </button>
-                    {[["#222222","검정"],["#dc2626","빨강"],["#2563eb","파랑"]].map(([col, label]) => (
-                      <button key={col} onClick={() => setTextBoxColor(col)} title={label}
-                        className={`w-5 h-5 rounded-full border-2 transition-all ${textBoxColor === col ? "border-[#3a6a4a] scale-110" : "border-gray-300"}`}
-                        style={{ background: col }} />
-                    ))}
+                    <div className="flex flex-col gap-0.5 shrink-0">
+                      {[["#222222","검정"],["#dc2626","빨강"],["#2563eb","파랑"]].map(([col, label]) => (
+                        <button key={col} title={`${label} — 선택한 텍스트에 바로 적용, 새 텍스트 상자 기본색으로도 사용`}
+                          onClick={() => {
+                            setTextBoxColor(col);
+                            const selTbIds = Array.from(selected).filter(id => textBoxes.some(t => t.id === id));
+                            if (selTbIds.length) {
+                              saveHistory();
+                              setTextBoxes(p => p.map(t => selTbIds.includes(t.id) ? { ...t, color: col } : t));
+                            }
+                          }}
+                          className={`w-4 h-4 rounded-full border-2 transition-all ${textBoxColor === col ? "border-[#3a6a4a] scale-110" : "border-gray-300"}`}
+                          style={{ background: col }} />
+                      ))}
+                    </div>
                   </div>
 
                   {/* 글씨(이름·나이·텍스트박스 공통) 크기·굵기 — 하나만 선택돼도, 여러 개 섞여 선택돼도 항상 이 버튼 하나 */}
