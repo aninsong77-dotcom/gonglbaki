@@ -68,9 +68,10 @@ Esc\uB85C \uCDE8\uC18C`,position:"bottom"},{target:"geo-child-line",title:"\uC79
 \u2022 Alt+\uB4DC\uB798\uADF8: \uD654\uBA74 \uC774\uB3D9
 \u2022 Delete: \uC120\uD0DD \uD56D\uBAA9 \uC0AD\uC81C`,position:"top"},{target:null,title:"\uC900\uBE44 \uC644\uB8CC! \u2705",body:`\uC774\uC81C \uC9C1\uC811 \uADF8\uB824\uBCF4\uC138\uC694!
 \u2753 \uBC84\uD2BC\uC73C\uB85C \uC5B8\uC81C\uB4E0 \uB2E4\uC2DC \uBCFC \uC218 \uC788\uC5B4\uC694.`}]});var $m=_e(()=>{var th=Ue(q0()),xa=Ue(On());J0();I0();var Ql=Ue(pn()),P0="gb_geo_tour_done";function wm(){if(document.getElementById("geo-tour-btn-style"))return;let t=document.createElement("style");t.id="geo-tour-btn-style",t.textContent=`
-    @keyframes geoTourFloat{0%{opacity:0;transform:scale(.8)}100%{opacity:1;transform:scale(1)}}
+    @keyframes geoTourFloat{0%{opacity:0;transform:translateY(0) scale(.8)}100%{opacity:1;transform:translateY(0) scale(1)}}
     @keyframes geoTourPulseSm{0%{box-shadow:0 3px 10px rgba(58,106,74,.35),0 0 0 0 rgba(58,106,74,.45)}70%{box-shadow:0 3px 10px rgba(58,106,74,.35),0 0 0 7px rgba(58,106,74,0)}100%{box-shadow:0 3px 10px rgba(58,106,74,.35),0 0 0 0 rgba(58,106,74,0)}}
-    .geo-tour-btn-inline{animation:geoTourFloat .35s ease both,geoTourPulseSm 2.4s ease-in-out .3s 4;transition:transform .15s ease}
+    @keyframes geoTourIdleBob{0%,82%,100%{transform:translateY(0)}88%{transform:translateY(-5px)}94%{transform:translateY(0)}}
+    .geo-tour-btn-inline{animation:geoTourFloat .35s ease both,geoTourPulseSm 2.4s ease-in-out .3s 4,geoTourIdleBob 6s ease-in-out 1s infinite;transition:transform .15s ease}
     .geo-tour-btn-inline:hover{transform:scale(1.1)}
     .geo-tour-btn-inline:active{transform:scale(.92)}
   `,document.head.appendChild(t)}function Gm(){let[t,e]=(0,xa.useState)(!1),[l,n]=(0,xa.useState)(-1);(0,xa.useEffect)(()=>{let i=document.getElementById("splash"),u=setTimeout(()=>{i&&i.classList.add("fade-out"),setTimeout(()=>{i&&(i.style.display="none"),e(!0),localStorage.getItem(P0)||setTimeout(()=>n(0),500)},1200)},5800);return()=>clearTimeout(u)},[]),(0,xa.useEffect)(()=>{wm()},[]);let a=()=>{n(-1),localStorage.setItem(P0,"1")};return t?(0,Ql.jsxs)(Ql.Fragment,{children:[(0,Ql.jsx)(Ss,{onOpenTour:()=>n(0)}),l>=0&&l<Di.length&&(0,Ql.jsx)(F0,{step:Di[l],stepIndex:l,total:Di.length,onNext:()=>{l>=Di.length-1?a():n(i=>i+1)},onPrev:()=>n(i=>Math.max(0,i-1)),onClose:a})]}):null}var Xm=document.getElementById("root");(0,th.createRoot)(Xm).render((0,Ql.jsx)(Gm,{}))});$m();})();

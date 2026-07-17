@@ -11,9 +11,10 @@ function injectTourButtonAnim() {
   const s = document.createElement("style");
   s.id = "geo-tour-btn-style";
   s.textContent = `
-    @keyframes geoTourFloat{0%{opacity:0;transform:scale(.8)}100%{opacity:1;transform:scale(1)}}
+    @keyframes geoTourFloat{0%{opacity:0;transform:translateY(0) scale(.8)}100%{opacity:1;transform:translateY(0) scale(1)}}
     @keyframes geoTourPulseSm{0%{box-shadow:0 3px 10px rgba(58,106,74,.35),0 0 0 0 rgba(58,106,74,.45)}70%{box-shadow:0 3px 10px rgba(58,106,74,.35),0 0 0 7px rgba(58,106,74,0)}100%{box-shadow:0 3px 10px rgba(58,106,74,.35),0 0 0 0 rgba(58,106,74,0)}}
-    .geo-tour-btn-inline{animation:geoTourFloat .35s ease both,geoTourPulseSm 2.4s ease-in-out .3s 4;transition:transform .15s ease}
+    @keyframes geoTourIdleBob{0%,82%,100%{transform:translateY(0)}88%{transform:translateY(-5px)}94%{transform:translateY(0)}}
+    .geo-tour-btn-inline{animation:geoTourFloat .35s ease both,geoTourPulseSm 2.4s ease-in-out .3s 4,geoTourIdleBob 6s ease-in-out 1s infinite;transition:transform .15s ease}
     .geo-tour-btn-inline:hover{transform:scale(1.1)}
     .geo-tour-btn-inline:active{transform:scale(.92)}
   `;
