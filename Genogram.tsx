@@ -203,7 +203,8 @@ function TwoLineBtn({ top, bottom, onClick, active, disabled, danger, preview, b
 
 
 // ─── 메인 ─────────────────────────────────────────────────────
-export default function Genogram() {
+// onOpenTour: 웹 스케치북 버전에서만 전달(가이드 투어 버튼). 데스크탑 앱에서는 항상 undefined — 미사용.
+export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {}) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -2024,9 +2025,26 @@ export default function Genogram() {
             <span className="text-gray-300">|</span>
             <span className="whitespace-nowrap"><kbd className="px-1.5 py-0.5 bg-gray-100 rounded font-mono text-[10px] font-semibold">나이클릭</kbd> 나이편집</span>
           </div>
-          <span className="ml-auto font-semibold shrink-0 text-right leading-tight text-[11px] text-gray-500 whitespace-nowrap">
-            © 2026. An In-song. Distributed for free.<br />(2026. 안인성. 무료 배포)
-          </span>
+          <div className="ml-auto flex items-center gap-2 shrink-0">
+            {onOpenTour && (
+              <button onClick={onOpenTour} title="사용 안내 투어 다시 보기" className="geo-tour-btn-inline"
+                style={{
+                  width: 30, height: 30, borderRadius: "50%", border: "none", padding: 0,
+                  background: "linear-gradient(135deg,#52916a 0%,#3a6a4a 100%)",
+                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                <svg width={16} height={16} viewBox="0 0 24 24" fill="none">
+                  <path d="M4 5.6C4 4.7 4.7 4 5.6 4h12.8C19.3 4 20 4.7 20 5.6v8.8c0 .9-.7 1.6-1.6 1.6H9.2l-3.6 3c-.6.5-1.6.1-1.6-.7V5.6Z" fill="#fff" />
+                  <circle cx={8.8} cy={10} r={1.25} fill="#3a6a4a" />
+                  <circle cx={12} cy={10} r={1.25} fill="#3a6a4a" />
+                  <circle cx={15.2} cy={10} r={1.25} fill="#3a6a4a" />
+                </svg>
+              </button>
+            )}
+            <span className="font-semibold text-right leading-tight text-[11px] text-gray-500 whitespace-nowrap">
+              © 2026. An In-song. Distributed for free.<br />(2026. 안인성. 무료 배포)
+            </span>
+          </div>
         </div>
         {/* 2행: 단축키 나머지 */}
         <div className="px-5 pb-2.5 flex items-center gap-3 text-[11px] text-gray-500 font-medium">
