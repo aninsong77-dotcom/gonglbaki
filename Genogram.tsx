@@ -1376,7 +1376,7 @@ export default function Genogram() {
                       setTextBoxes(p => p.map(t => selected.has(t.id) ? { ...t, bold: next } : t));
                     };
                     return (
-                      <div className="shrink-0" ref={labelStyleMenuRef}>
+                      <div className="shrink-0" ref={labelStyleMenuRef} data-tour="geo-textstyle">
                         <TwoLineBtn top="Aa" bottom="글씨" onClick={() => {
                             if (!showLabelStyleMenu) {
                               const r = labelStyleMenuRef.current?.getBoundingClientRect();
