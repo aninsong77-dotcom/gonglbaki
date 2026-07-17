@@ -2029,11 +2029,11 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
             {onOpenTour && (
               <button onClick={onOpenTour} title="사용 안내 투어 다시 보기" className="geo-tour-btn-inline"
                 style={{
-                  width: 30, height: 30, borderRadius: "50%", border: "none", padding: 0,
+                  width: 38, height: 38, borderRadius: "50%", border: "none", padding: 0,
                   background: "linear-gradient(135deg,#52916a 0%,#3a6a4a 100%)",
                   cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
                 }}>
-                <svg width={16} height={16} viewBox="0 0 24 24" fill="none">
+                <svg width={20} height={20} viewBox="0 0 24 24" fill="none">
                   <path d="M4 5.6C4 4.7 4.7 4 5.6 4h12.8C19.3 4 20 4.7 20 5.6v8.8c0 .9-.7 1.6-1.6 1.6H9.2l-3.6 3c-.6.5-1.6.1-1.6-.7V5.6Z" fill="#fff" />
                   <circle cx={8.8} cy={10} r={1.25} fill="#3a6a4a" />
                   <circle cx={12} cy={10} r={1.25} fill="#3a6a4a" />
