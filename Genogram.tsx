@@ -21,6 +21,8 @@ interface GNode {
   identical?: boolean; // 일란성 쌍둥이
   labelFontSize?: number; // 이름 글자 크기(px), 미지정 시 11
   labelBold?: boolean; // 이름 글자 굵게
+  labelOffsetX?: number; // 이름 칸을 기본 위치에서 옮긴 거리(자유 이동), 미지정 시 0
+  labelOffsetY?: number;
 }
 interface GLine { id: string; from: string; to: string; lineType: LineType; }
 type ChildLineType = "일반" | "위탁" | "입양";
@@ -28,6 +30,7 @@ interface Marriage { id: string; childIds: string[]; childLineTypes?: Record<str
 interface GTextBox { id: string; x: number; y: number; w: number; h: number; text: string; color: string; fontSize: number; bold?: boolean; }
 
 const NS = 56, SNAP = 18, CHILD_DROP = 70;
+const LABEL_LEADER_THRESHOLD = 16; // 이 거리 이상 이름 칸을 옮기면 안내선(연결선) 표시
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 const FAMILY_TYPES: LineType[] = ["결혼", "별거", "이혼", "재결합", "동거", "약혼", "사별"];
@@ -229,7 +232,11 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
   const [textBoxColor, setTextBoxColor] = useState("#222222");
   const [editingTbId, setEditingTbId] = useState<string | null>(null);
   const tbDragRef = useRef<{ id: string; type: "move" | "resize"; ox: number; oy: number; initW?: number; initH?: number } | null>(null);
+  // 인물 이름 칸 자유 이동 드래그 — 시작 시점 마우스 위치·오프셋 기억
+  const labelDragRef = useRef<{ id: string; startPtX: number; startPtY: number; startOffX: number; startOffY: number } | null>(null);
   const [showSaveMenu, setShowSaveMenu] = useState(false);
+  // 툴바가 overflow-hidden 이라 드롭다운을 fixed 로 띄움 — 버튼 위치 기억용
+  const [saveMenuPos, setSaveMenuPos] = useState<{ x: number; y: number } | null>(null);
   const saveMenuRef = useRef<HTMLDivElement>(null);
   const [showLabelStyleMenu, setShowLabelStyleMenu] = useState(false);
   const labelStyleMenuRef = useRef<HTMLDivElement>(null); // 버튼(앵커) — 위치 계산 + 바깥클릭 판정용
@@ -543,6 +550,12 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
       if (Math.abs(next) < DROP_SNAP) next = 0;
       setMarriages(p => p.map(m => m.id === marriageId ? { ...m, dropOffsetX: next } : m));
     }
+    if (labelDragRef.current) {
+      const pt = svgPt(e.clientX, e.clientY);
+      const { id, startPtX, startPtY, startOffX, startOffY } = labelDragRef.current;
+      const dx = pt.x - startPtX, dy = pt.y - startPtY;
+      setNodes(p => p.map(n => n.id === id ? { ...n, labelOffsetX: startOffX + dx, labelOffsetY: startOffY + dy } : n));
+    }
   };
 
   const onMouseUp = () => {
@@ -554,7 +567,7 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
       lines.forEach(l => { const p1 = getEndpoint(l.from, nodes, lines), p2 = getEndpoint(l.to, nodes, lines); const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2; if (mx >= x && mx <= x + w && my >= y && my <= y + h) s.add(l.id); });
       if (s.size) setSelected(s);
     }
-    dragRef.current = null; rbStart.current = null; legendDragRef.current = null; tbDragRef.current = null; childDropDragRef.current = null; setRubber(null);
+    dragRef.current = null; rbStart.current = null; legendDragRef.current = null; tbDragRef.current = null; childDropDragRef.current = null; labelDragRef.current = null; setRubber(null);
   };
 
   const onCanvasDown = (e: React.MouseEvent) => {
@@ -617,19 +630,59 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
     setEditId(null);
   };
 
+  // 저장용 SVG 생성 — 실제 그려진 내용(getBBox) 기준으로 여백 최소화, 화면 확대/이동 상태 제거
+  const buildExportSvg = (stripTextOutline = false) => {
+    const svg = svgRef.current; if (!svg || !nodes.length) return null;
+    const rootG = svg.querySelector("g"); if (!rootG) return null;
+    const b = (rootG as SVGGElement).getBBox();
+    const pad = 12;
+    const w = Math.ceil(b.width + pad * 2), h = Math.ceil(b.height + pad * 2);
+    const clone = svg.cloneNode(true) as SVGSVGElement;
+    clone.querySelector("g")?.removeAttribute("transform");
+    clone.setAttribute("viewBox", `${Math.floor(b.x - pad)} ${Math.floor(b.y - pad)} ${w} ${h}`);
+    clone.setAttribute("width", String(w));
+    clone.setAttribute("height", String(h));
+    clone.removeAttribute("style");
+    // SVG 파일 저장 시 화면용 흰 테두리(paint-order="stroke") 제거 — 한글(HWP) 등
+    // paint-order 미지원 렌더러는 흰 테두리를 글자 위에 덮어 그려서 글씨가 안 보임
+    if (stripTextOutline) clone.querySelectorAll("text").forEach(t => {
+      if (t.getAttribute("paint-order")) {
+        t.removeAttribute("stroke"); t.removeAttribute("stroke-width");
+        t.removeAttribute("stroke-linejoin"); t.removeAttribute("paint-order");
+      }
+    });
+    return { data: new XMLSerializer().serializeToString(clone), w, h };
+  };
+
+  const downloadBlob = (blob: Blob, name: string) => {
+    const url = URL.createObjectURL(blob); const a = document.createElement("a");
+    a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
+  };
+
   const saveImg = () => {
-    const svg = svgRef.current; if (!svg || !nodes.length) return;
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    nodes.forEach(n => { minX = Math.min(minX, n.x - 10); minY = Math.min(minY, n.y - 10); maxX = Math.max(maxX, n.x + NS + 10); maxY = Math.max(maxY, n.y + NS + 30); });
-    const canvasW = wrapRef.current?.clientWidth || canvasSize.w, canvasH = wrapRef.current?.clientHeight || canvasSize.h;
-    const lx = legendPos?.x ?? (canvasW - legendBoxW - 16), ly = legendPos?.y ?? (canvasH - 300);
-    minX = Math.min(minX, lx - 10); minY = Math.min(minY, ly - 10);
-    maxX = Math.max(maxX, lx + legendBoxW + 10); maxY = Math.max(maxY, ly + (legendBoxH || 400) + 10);
-    const pad = 20;
-    const data = new XMLSerializer().serializeToString(svg);
-    const modified = data.replace(/viewBox="[^"]*"/, `viewBox="${minX - pad} ${minY - pad} ${maxX - minX + pad * 2} ${maxY - minY + pad * 2}"`);
-    const blob = new Blob([modified], { type: "image/svg+xml" });
-    const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = "가계도.svg"; a.click(); URL.revokeObjectURL(url);
+    const ex = buildExportSvg(true); if (!ex) return;
+    downloadBlob(new Blob([ex.data], { type: "image/svg+xml" }), "가계도.svg");
+    setShowSaveMenu(false);
+  };
+
+  // 한글·워드는 SVG 글자를 제대로 못 그리는 경우가 많아 PNG 저장 제공 (문서 삽입용 권장)
+  const savePng = () => {
+    const ex = buildExportSvg(); if (!ex) return;
+    const url = URL.createObjectURL(new Blob([ex.data], { type: "image/svg+xml" }));
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.max(1, Math.min(3, 4096 / Math.max(ex.w, ex.h)));
+      const c = document.createElement("canvas");
+      c.width = Math.round(ex.w * scale); c.height = Math.round(ex.h * scale);
+      const ctx = c.getContext("2d");
+      if (!ctx) { URL.revokeObjectURL(url); return; }
+      ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(b => { if (b) downloadBlob(b, "가계도.png"); }, "image/png");
+    };
+    img.onerror = () => URL.revokeObjectURL(url);
+    img.src = url;
     setShowSaveMenu(false);
   };
 
@@ -1454,17 +1507,32 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
           </div>
           {/* 저장 드롭다운 */}
           <div className="relative" ref={saveMenuRef}>
-            <TwoLineBtn top="💾" bottom="저장" onClick={() => setShowSaveMenu(v => !v)} active={showSaveMenu} />
-            {showSaveMenu && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden" style={{ minWidth: 168 }}>
+            <TwoLineBtn top="💾" bottom="저장" onClick={() => {
+              const r = saveMenuRef.current?.getBoundingClientRect();
+              if (r) setSaveMenuPos({ x: r.left + r.width / 2, y: r.bottom });
+              setShowSaveMenu(v => !v);
+            }} active={showSaveMenu} />
+            {showSaveMenu && saveMenuPos && (
+              <div className="fixed z-50 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+                style={{ minWidth: 168, top: saveMenuPos.y + 4, left: Math.max(90, Math.min(saveMenuPos.x, window.innerWidth - 90)), transform: "translateX(-50%)" }}>
                 <button
-                  onClick={saveImg}
+                  onClick={savePng}
                   className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
                 >
                   <span className="text-base">🖼️</span>
                   <div>
+                    <div className="font-medium text-gray-700">PNG로 저장</div>
+                    <div className="text-[10px] text-gray-400">한글·워드 붙여넣기용 (권장)</div>
+                  </div>
+                </button>
+                <button
+                  onClick={saveImg}
+                  className="w-full px-3 py-2 text-left text-xs hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100"
+                >
+                  <span className="text-base">📐</span>
+                  <div>
                     <div className="font-medium text-gray-700">SVG로 저장</div>
-                    <div className="text-[10px] text-gray-400">이미지 파일 (수정 불가)</div>
+                    <div className="text-[10px] text-gray-400">고화질 벡터 (확대해도 안 깨짐)</div>
                   </div>
                 </button>
                 <button
@@ -1564,29 +1632,47 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
                     </text>
                   )
                 )}
-                {/* 이름 (도형 아래 — 특수자녀는 도형이 작아서 가까이) */}
+                {/* 이름 (도형 아래 — 특수자녀는 도형이 작아서 가까이). 자유 이동 가능, 멀리 옮기면 안내선 표시 */}
                 {(() => {
                   const isSpecial = ["임신","사산아","자연유산","인공유산"].includes(n.gender);
                   const labelFs = n.labelFontSize ?? 11;
                   const labelFw = n.labelBold ? 700 : 500;
                   const labelY = isSpecial ? NS/2 + (n.gender === "자연유산" || n.gender === "인공유산" ? 20 : 28) : NS + 15;
                   const foY = isSpecial ? labelY - 12 : NS + 2;
-                  return editId === n.id && editField === "label" ? (
-                    <foreignObject x={-20} y={foY} width={NS + 40} height={44}>
-                      <textarea autoFocus value={editVal} onChange={e => setEditVal(e.target.value)}
-                        onBlur={commitEdit}
-                        onKeyDown={e => { if (e.key === "Escape") setEditId(null); e.stopPropagation(); }}
-                        rows={2}
-                        style={{ width: "100%", height: "100%", fontSize: labelFs, fontWeight: labelFw, textAlign: "center", border: "1px solid #3a6a4a", borderRadius: 3, padding: "1px 3px", outline: "none", resize: "none", fontFamily: "'Malgun Gothic', sans-serif", lineHeight: 1.2 }} />
-                    </foreignObject>
-                  ) : (
-                    <text x={NS / 2} y={labelY} textAnchor="middle" fontSize={labelFs} fontWeight={labelFw}
-                      fill={n.label ? "#222" : "#ccc"} stroke="white" strokeWidth={3} strokeLinejoin="round" paintOrder="stroke"
-                      fontFamily="'Malgun Gothic', sans-serif">
-                      {(n.label || "더블클릭").split("\n").map((ln, li, arr) => (
-                        <tspan key={li} x={NS / 2} dy={li === 0 ? -(arr.length - 1) * labelFs * 0.6 : labelFs * 1.2}>{ln}</tspan>
-                      ))}
-                    </text>
+                  const offX = n.labelOffsetX ?? 0, offY = n.labelOffsetY ?? 0;
+                  const showLeader = Math.abs(offX) > LABEL_LEADER_THRESHOLD || Math.abs(offY) > LABEL_LEADER_THRESHOLD;
+                  const startDrag = (e: React.MouseEvent) => {
+                    e.stopPropagation();
+                    const pt = svgPt(e.clientX, e.clientY);
+                    saveHistory();
+                    labelDragRef.current = { id: n.id, startPtX: pt.x, startPtY: pt.y, startOffX: offX, startOffY: offY };
+                  };
+                  return (
+                    <>
+                      {showLeader && (
+                        <line x1={NS / 2} y1={NS / 2} x2={NS / 2 + offX} y2={labelY + offY - labelFs}
+                          stroke="#9ca3af" strokeWidth={1} strokeDasharray="3 2" opacity={0.8} pointerEvents="none" />
+                      )}
+                      {editId === n.id && editField === "label" ? (
+                        <foreignObject x={-20 + offX} y={foY + offY} width={NS + 40} height={44}>
+                          <textarea autoFocus value={editVal} onChange={e => setEditVal(e.target.value)}
+                            onBlur={commitEdit}
+                            onKeyDown={e => { if (e.key === "Escape") setEditId(null); e.stopPropagation(); }}
+                            rows={2}
+                            style={{ width: "100%", height: "100%", fontSize: labelFs, fontWeight: labelFw, textAlign: "center", border: "1px solid #3a6a4a", borderRadius: 3, padding: "1px 3px", outline: "none", resize: "none", fontFamily: "'Malgun Gothic', sans-serif", lineHeight: 1.2 }} />
+                        </foreignObject>
+                      ) : (
+                        <text x={NS / 2 + offX} y={labelY + offY} textAnchor="middle" fontSize={labelFs} fontWeight={labelFw}
+                          fill={n.label ? "#222" : "#ccc"} stroke="white" strokeWidth={3} strokeLinejoin="round" paintOrder="stroke"
+                          fontFamily="'Malgun Gothic', sans-serif"
+                          style={{ cursor: "move" }}
+                          onMouseDown={startDrag}>
+                          {(n.label || "더블클릭").split("\n").map((ln, li, arr) => (
+                            <tspan key={li} x={NS / 2 + offX} dy={li === 0 ? -(arr.length - 1) * labelFs * 0.6 : labelFs * 1.2}>{ln}</tspan>
+                          ))}
+                        </text>
+                      )}
+                    </>
                   );
                 })()}
               </g>
