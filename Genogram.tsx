@@ -703,8 +703,17 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
   const loadJson = (file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
+      let raw = (e.target?.result as string) ?? "";
+      // 일부 텍스트 편집기·구버전 저장 경로에서 붙는 UTF-8 BOM 제거(있으면 JSON.parse가 무조건 실패함)
+      if (raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+      let data: any;
       try {
-        const data = JSON.parse(e.target?.result as string);
+        data = JSON.parse(raw);
+      } catch (err) {
+        alert(`가계도 JSON 파일을 읽을 수 없습니다.\n(${err instanceof Error ? err.message : String(err)})`);
+        return;
+      }
+      try {
         if (data.version !== 1) { alert("지원하지 않는 가계도 파일 형식입니다."); return; }
         saveHistory();
         setNodes(data.nodes ?? []);
@@ -718,7 +727,9 @@ export default function Genogram({ onOpenTour }: { onOpenTour?: () => void } = {
         if (data.legendLabelOverrides !== undefined) setLegendLabelOverrides(data.legendLabelOverrides);
         if (data.legendVisible !== undefined) setLegendVisible(data.legendVisible);
         if (data.bw !== undefined) setBw(data.bw);
-      } catch { alert("가계도 JSON 파일을 읽을 수 없습니다."); }
+      } catch (err) {
+        alert(`가계도 파일을 적용하는 중 오류가 발생했습니다.\n(${err instanceof Error ? err.message : String(err)})`);
+      }
     };
     reader.readAsText(file, "utf-8");
   };
